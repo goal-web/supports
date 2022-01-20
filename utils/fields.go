@@ -7,12 +7,14 @@ import (
 	"strings"
 )
 
+// MergeFields 合并两个 contracts.Fields
 func MergeFields(fields contracts.Fields, finalFields contracts.Fields) {
 	for key, value := range finalFields {
 		fields[key] = value
 	}
 }
 
+// GetStringField 获取 Fields 中的字符串，会尝试转换类型
 func GetStringField(fields contracts.Fields, key string, defaultValues ...string) string {
 	if value, existsString := fields[key]; existsString {
 		if str, isString := value.(string); isString {
@@ -22,6 +24,7 @@ func GetStringField(fields contracts.Fields, key string, defaultValues ...string
 	return StringOr(defaultValues...)
 }
 
+// GetSubField 获取下级 Fields ，如果没有的话，匹配同前缀的放到下级 Fields 中
 func GetSubField(fields contracts.Fields, key string, defaultValues ...contracts.Fields) contracts.Fields {
 
 	if subField, isField := fields[key].(contracts.Fields); isField {
@@ -48,6 +51,7 @@ func GetSubField(fields contracts.Fields, key string, defaultValues ...contracts
 	return subField
 }
 
+// GetInt64Field 获取 Fields 中的 int64，会尝试转换类型
 func GetInt64Field(fields contracts.Fields, key string, defaultValues ...int64) int64 {
 	var defaultValue int64 = 0
 	if len(defaultValues) > 0 {
@@ -63,6 +67,7 @@ func GetInt64Field(fields contracts.Fields, key string, defaultValues ...int64) 
 	}
 }
 
+// GetIntField 获取 Fields 中的 int，会尝试转换类型
 func GetIntField(fields contracts.Fields, key string, defaultValues ...int) int {
 	var defaultValue = 0
 	if len(defaultValues) > 0 {
@@ -78,6 +83,7 @@ func GetIntField(fields contracts.Fields, key string, defaultValues ...int) int 
 	}
 }
 
+// GetFloatField 获取 Fields 中的 float32，会尝试转换类型
 func GetFloatField(fields contracts.Fields, key string, defaultValues ...float32) float32 {
 	var defaultValue float32 = 0
 	if len(defaultValues) > 0 {
@@ -93,6 +99,7 @@ func GetFloatField(fields contracts.Fields, key string, defaultValues ...float32
 	}
 }
 
+// GetFloat64Field 获取 Fields 中的 float64，会尝试转换类型
 func GetFloat64Field(fields contracts.Fields, key string, defaultValues ...float64) float64 {
 	var defaultValue float64 = 0
 	if len(defaultValues) > 0 {
@@ -108,6 +115,7 @@ func GetFloat64Field(fields contracts.Fields, key string, defaultValues ...float
 	}
 }
 
+// GetBoolField 获取 Fields 中的 bool，会尝试转换类型
 func GetBoolField(fields contracts.Fields, key string, defaultValues ...bool) bool {
 	var defaultValue = false
 	if len(defaultValues) > 0 {
@@ -119,6 +127,7 @@ func GetBoolField(fields contracts.Fields, key string, defaultValues ...bool) bo
 	return defaultValue
 }
 
+// ConvertToFields 尝试把一个变量转换成 Fields 类型
 func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
 	fields := contracts.Fields{}
 	switch paramValue := anyValue.(type) {

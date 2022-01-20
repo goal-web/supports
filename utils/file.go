@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// CopyFile 复制一个文件
 func CopyFile(from, to string, bufferSize int64) error {
 	sourceFileStat, statRrr := os.Stat(from)
 	if statRrr != nil {
@@ -53,6 +54,7 @@ func CopyFile(from, to string, bufferSize int64) error {
 	return nil
 }
 
+// AllFiles 获取一个目录下的所有文件
 func AllFiles(path string) (results []fs.FileInfo) {
 	_ = filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
 		if err == nil && !info.IsDir() {
@@ -63,6 +65,7 @@ func AllFiles(path string) (results []fs.FileInfo) {
 	return results
 }
 
+// AllDirectories 获取一个目录下的所有目录
 func AllDirectories(directory string) (results []string) {
 	_ = filepath.WalkDir(directory, func(path string, dir fs.DirEntry, err error) error {
 		if err == nil && dir.IsDir() && path != directory {

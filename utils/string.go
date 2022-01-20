@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// SubString 切割字符串
 func SubString(str string, start, num int) string {
 	runes := []rune(str)
 	strLen := len(runes)
@@ -26,6 +27,14 @@ func IfString(condition bool, str1 string, otherStr ...string) string {
 		return str1
 	}
 	return StringOr(otherStr...)
+}
+
+// Ifi 类似三目运算，返回第一个不是 nil 的值
+func Ifi(condition bool, value interface{}, others ...interface{}) interface{} {
+	if condition {
+		return value
+	}
+	return NotNil(others...)
 }
 
 // StringOr 尽量不返回空字符串
@@ -85,6 +94,7 @@ func CamelString(s string) string {
 	return string(data[:])
 }
 
+// JoinStringerArray 连接fmt.Stringer数组，类似 strings.Join
 func JoinStringerArray(arr []fmt.Stringer, sep string) (result string) {
 	for index, stringer := range arr {
 		if index == 0 {
@@ -96,6 +106,7 @@ func JoinStringerArray(arr []fmt.Stringer, sep string) (result string) {
 	return
 }
 
+// JoinIntArray 连接 int 数组，类似 strings.Join
 func JoinIntArray(arr []int, sep string) (result string) {
 	for index, num := range arr {
 		if index == 0 {
@@ -108,6 +119,7 @@ func JoinIntArray(arr []int, sep string) (result string) {
 	return
 }
 
+// JoinInt64Array 连接 int64 数组，类似 strings.Join
 func JoinInt64Array(arr []int64, sep string) (result string) {
 	for index, num := range arr {
 		if index == 0 {
@@ -119,6 +131,7 @@ func JoinInt64Array(arr []int64, sep string) (result string) {
 	return
 }
 
+// JoinFloatArray 连接 float32 数组，类似 strings.Join
 func JoinFloatArray(arr []float32, sep string) (result string) {
 	for index, num := range arr {
 		if index == 0 {
@@ -129,6 +142,8 @@ func JoinFloatArray(arr []float32, sep string) (result string) {
 	}
 	return
 }
+
+// JoinFloat64Array 连接 float64 数组，类似 strings.Join
 func JoinFloat64Array(arr []float64, sep string) (result string) {
 	for index, num := range arr {
 		if index == 0 {
@@ -140,6 +155,7 @@ func JoinFloat64Array(arr []float64, sep string) (result string) {
 	return
 }
 
+// JoinInterfaceArray 连接 interface 数组，类似 strings.Join
 func JoinInterfaceArray(arr []interface{}, sep string) (result string) {
 	for index, v := range arr {
 		if index == 0 {
@@ -151,6 +167,7 @@ func JoinInterfaceArray(arr []interface{}, sep string) (result string) {
 	return
 }
 
+// MakeSymbolArray 创建一个有指定字符组成的数组
 func MakeSymbolArray(symbol string, num int) (result []string) {
 	for i := 0; i < num; i++ {
 		result = append(result, symbol)
@@ -158,6 +175,7 @@ func MakeSymbolArray(symbol string, num int) (result []string) {
 	return
 }
 
+// StringArray2InterfaceArray 把字符串数组转成 interface{} 数组
 func StringArray2InterfaceArray(args []string) (result []interface{}) {
 	for _, arg := range args {
 		result = append(result, arg)

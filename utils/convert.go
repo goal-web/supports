@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// 把能转换成 int64 的值转换成 int64
+// ConvertToInt64 把能转换成 int64 的值转换成 int64
 func ConvertToInt64(rawValue interface{}, defaultValue int64) int64 {
 	switch value := rawValue.(type) {
 	case int64:
@@ -30,7 +30,7 @@ func ConvertToInt64(rawValue interface{}, defaultValue int64) int64 {
 	return defaultValue
 }
 
-// 把能转换成 int 的值转换成 int
+// ConvertToInt 把能转换成 int 的值转换成 int
 func ConvertToInt(rawValue interface{}, defaultValue int) int {
 	switch value := rawValue.(type) {
 	case int64:
@@ -55,7 +55,7 @@ func ConvertToInt(rawValue interface{}, defaultValue int) int {
 	return defaultValue
 }
 
-// 把能转换成 float64 的值转换成 float64
+// ConvertToFloat64 把能转换成 float64 的值转换成 float64
 func ConvertToFloat64(rawValue interface{}, defaultValue float64) float64 {
 	switch value := rawValue.(type) {
 	case float64:
@@ -80,7 +80,7 @@ func ConvertToFloat64(rawValue interface{}, defaultValue float64) float64 {
 	return defaultValue
 }
 
-// 把能转换成 float32 的值转换成 float32
+// ConvertToFloat 把能转换成 float32 的值转换成 float32
 func ConvertToFloat(rawValue interface{}, defaultValue float32) float32 {
 	switch value := rawValue.(type) {
 	case float64:
@@ -105,7 +105,7 @@ func ConvertToFloat(rawValue interface{}, defaultValue float32) float32 {
 	return defaultValue
 }
 
-// 把能转换成 bool 的值转换成 bool
+// ConvertToBool 把能转换成 bool 的值转换成 bool
 func ConvertToBool(rawValue interface{}, defaultValue bool) bool {
 	switch value := rawValue.(type) {
 	case bool:
@@ -124,7 +124,7 @@ func ConvertToBool(rawValue interface{}, defaultValue bool) bool {
 	return defaultValue
 }
 
-// 把能转换成 string 的值转换成 string
+// ConvertToString 把能转换成 string 的值转换成 string
 func ConvertToString(rawValue interface{}, defaultValue string) string {
 	switch value := rawValue.(type) {
 	case bool:

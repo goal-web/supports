@@ -18,6 +18,7 @@ const (
 	letterIdMax  = 63 / letterIdBits
 )
 
+// RandStr 生成随机字符串
 func RandStr(n int) string {
 	sb := strings.Builder{}
 	sb.Grow(n)
