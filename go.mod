@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/apex/log v1.9.0
-	github.com/goal-web/contracts v0.0.0-20220120002635-287c7ed72d25
+	github.com/goal-web/contracts v0.1.1
 	github.com/stretchr/testify v1.7.0
 )
 
