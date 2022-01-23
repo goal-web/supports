@@ -7,6 +7,7 @@ import (
 	"github.com/goal-web/supports/utils"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -72,4 +73,10 @@ func TestConverts(t *testing.T) {
 	fmt.Println(utils.ConvertToString(true, "false"))
 	fmt.Println(utils.ConvertToString(struct {
 	}{}, "test"))
+}
+
+func TestEachSlice(t *testing.T) {
+	utils.EachSlice(reflect.ValueOf([]string{"a", "b"}), func(value reflect.Value) {
+		fmt.Println(value.String())
+	})
 }

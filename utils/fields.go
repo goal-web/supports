@@ -198,7 +198,7 @@ func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
 
 		switch paramType.Kind() {
 		case reflect.Struct: // 结构体
-			EachStructField(anyValue, func(field reflect.StructField, value reflect.Value) {
+			EachStructField(paramType, anyValue, func(field reflect.StructField, value reflect.Value) {
 				fields[SnakeString(field.Name)] = value.Interface()
 			})
 		case reflect.Map: // 自定义的 map

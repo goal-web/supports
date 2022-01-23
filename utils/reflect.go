@@ -60,12 +60,20 @@ func IsInstanceIn(v interface{}, types ...reflect.Type) bool {
 }
 
 // EachStructField 遍历结构体的字段
-func EachStructField(s interface{}, handler func(reflect.StructField, reflect.Value)) {
-	t := reflect.TypeOf(s)
-	v := reflect.ValueOf(s)
+func EachStructField(value reflect.Value, data interface{}, handler func(reflect.StructField, reflect.Value)) {
+	dataType := reflect.TypeOf(data)
 
-	for i := 0; i < t.NumField(); i++ {
-		handler(t.Field(i), v.Field(i))
+	for i := 0; i < dataType.NumField(); i++ {
+		handler(dataType.Field(i), value.Field(i))
+	}
+}
+
+// EachSlice 遍历任意 slice 或者 array
+func EachSlice(value reflect.Value, handler func(reflect.Value)) {
+	sliceLen := value.Len()
+
+	for i := 0; i < sliceLen; i++ {
+		handler(value.Index(i))
 	}
 }
 
