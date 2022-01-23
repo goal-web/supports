@@ -199,7 +199,11 @@ func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
 		switch paramType.Kind() {
 		case reflect.Struct: // 结构体
 			EachStructField(paramType, anyValue, func(field reflect.StructField, value reflect.Value) {
-				fields[SnakeString(field.Name)] = value.Interface()
+				if field.IsExported() {
+					fields[SnakeString(field.Name)] = value.Interface()
+				} else {
+					fields[SnakeString(field.Name)] = nil
+				}
 			})
 		case reflect.Map: // 自定义的 map
 			for _, key := range paramType.MapKeys() {
