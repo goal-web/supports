@@ -76,7 +76,7 @@ func TestConverts(t *testing.T) {
 }
 
 func TestEachSlice(t *testing.T) {
-	utils.EachSlice(reflect.ValueOf([]string{"a", "b"}), func(value reflect.Value) {
-		fmt.Println(value.String())
+	utils.EachSlice(reflect.ValueOf([]string{"a", "b"}), func(index int, value reflect.Value) {
+		fmt.Println(index, value.String())
 	})
 }

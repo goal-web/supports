@@ -69,11 +69,11 @@ func EachStructField(value reflect.Value, data interface{}, handler func(reflect
 }
 
 // EachSlice 遍历任意 slice 或者 array
-func EachSlice(value reflect.Value, handler func(reflect.Value)) {
+func EachSlice(value reflect.Value, handler func(int, reflect.Value)) {
 	sliceLen := value.Len()
 
 	for i := 0; i < sliceLen; i++ {
-		handler(value.Index(i))
+		handler(i, value.Index(i))
 	}
 }
 
