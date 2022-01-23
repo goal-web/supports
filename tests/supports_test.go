@@ -1,7 +1,8 @@
-package supports
+package tests
 
 import (
 	"fmt"
+	"github.com/goal-web/supports"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -11,7 +12,7 @@ type User struct {
 }
 
 func TestClass(t *testing.T) {
-	class := GetClass(User{})
+	class := supports.GetClass(User{})
 
 	userInstance := class.New(map[string]interface{}{
 		"name": "goal",

@@ -1,4 +1,4 @@
-package supports
+package tests
 
 import (
 	"errors"
@@ -66,4 +66,10 @@ func TestJoins(t *testing.T) {
 	fmt.Println(utils.JoinIntArray([]int{0, 1, 3}, ","))
 	fmt.Println(utils.JoinInt64Array([]int64{0, 1, 44}, ","))
 	fmt.Println(utils.JoinInterfaceArray([]interface{}{0, 1, 44, "aaa", errors.New("错误")}, ","))
+}
+
+func TestConverts(t *testing.T) {
+	fmt.Println(utils.ConvertToString(true, "false"))
+	fmt.Println(utils.ConvertToString(struct {
+	}{}, "test"))
 }

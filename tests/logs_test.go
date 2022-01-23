@@ -1,4 +1,4 @@
-package supports_test
+package tests_test
 
 import (
 	"errors"
