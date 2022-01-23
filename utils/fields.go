@@ -141,7 +141,47 @@ func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
 		for key, value := range paramValue {
 			fields[key] = value
 		}
+	case map[string]int8:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]int16:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]int32:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]int64:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]uint:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]uint8:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]uint16:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]uint32:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]uint64:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
 	case map[string]float64:
+		for key, value := range paramValue {
+			fields[key] = value
+		}
+	case map[string]float32:
 		for key, value := range paramValue {
 			fields[key] = value
 		}
@@ -162,13 +202,9 @@ func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
 				fields[SnakeString(field.Name)] = value.Interface()
 			})
 		case reflect.Map: // 自定义的 map
-			if paramType.Type().Key().Kind() == reflect.String {
-				for _, key := range paramType.MapKeys() {
-					name := key.String()
-					fields[name] = paramType.MapIndex(key).Interface()
-				}
-			} else {
-				return nil, errors.New("不支持 string 以外的类型作为 key 的 map")
+			for _, key := range paramType.MapKeys() {
+				name := key.String()
+				fields[name] = paramType.MapIndex(key).Interface()
 			}
 		default:
 			return nil, errors.New("不支持转 contracts.Fields 的类型： " + paramType.String())
