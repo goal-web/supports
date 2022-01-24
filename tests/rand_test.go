@@ -8,12 +8,12 @@ import (
 
 func TestRandInt(t *testing.T) {
 	for i := 0; i < 50; i++ {
-		fmt.Println(utils.RandInt(-100, 200))
+		fmt.Println(utils.RandInt(0, 3))
 	}
 }
 
 func TestRandIntArray(t *testing.T) {
 	for i := 0; i < 50; i++ {
-		fmt.Println(utils.RandIntArray(-100, 200, 10))
+		fmt.Println(utils.RandIntArray(0, 2, 10))
 	}
 }

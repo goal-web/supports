@@ -60,9 +60,9 @@ func RandIntArray(min, max, num int) []int {
 }
 
 func RandInt(min, max int) int {
-	return rand.New(src).Intn(int(math.Abs(float64(min))+math.Abs(float64(max)))) + min
+	return RandIntBySeed(src, min, max)
 }
 
 func RandIntBySeed(source rand.Source, min, max int) int {
-	return rand.New(source).Intn(int(math.Abs(float64(min))+math.Abs(float64(max)))) + min
+	return rand.New(source).Intn(int(math.Abs(float64(min))+math.Abs(float64(max)))+1) + min
 }
