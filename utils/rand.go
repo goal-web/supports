@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"math"
 	"math/rand"
 	"strings"
 	"time"
@@ -35,4 +36,33 @@ func RandStr(n int) string {
 		remain--
 	}
 	return sb.String()
+}
+
+func RandIntArray(min, max, num int) []int {
+	if min > max {
+		min, max = max, min
+	}
+	results := make([]int, 0)
+	randSource := rand.NewSource(time.Now().UnixNano())
+	if num > max-min { // 有重复
+		for i := 0; i < num; i++ {
+			results = append(results, RandIntBySeed(randSource, min, max))
+		}
+	} else {
+		for len(results) < num {
+			i := RandIntBySeed(randSource, min, max)
+			if IsNotIn(i, results) {
+				results = append(results, i)
+			}
+		}
+	}
+	return results
+}
+
+func RandInt(min, max int) int {
+	return rand.New(src).Intn(int(math.Abs(float64(min))+math.Abs(float64(max)))) + min
+}
+
+func RandIntBySeed(source rand.Source, min, max int) int {
+	return rand.New(source).Intn(int(math.Abs(float64(min))+math.Abs(float64(max)))) + min
 }
