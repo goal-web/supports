@@ -77,6 +77,13 @@ func EachSlice(value reflect.Value, handler func(int, reflect.Value)) {
 	}
 }
 
+// EachMap 遍历任意 map
+func EachMap(value reflect.Value, handler func(key reflect.Value, value reflect.Value)) {
+	for _, key := range value.MapKeys() {
+		handler(key, value.MapIndex(key))
+	}
+}
+
 // GetTypeKey 获取类型唯一字符串
 func GetTypeKey(p reflect.Type) string {
 	if p.Kind() == reflect.Ptr {
