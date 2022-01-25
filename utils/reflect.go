@@ -124,3 +124,25 @@ func ParseStructTag(rawTag reflect.StructTag) map[string][]string {
 	}
 	return results
 }
+
+// ConvertToValue 把 interface 转换成指定类型的 reflect.Value
+func ConvertToValue(argType reflect.Type, arg interface{}) reflect.Value {
+	switch argType.Kind() {
+	case reflect.String:
+		return reflect.ValueOf(ConvertToString(arg, ""))
+	case reflect.Int:
+		return reflect.ValueOf(ConvertToInt(arg, 0))
+	case reflect.Int64:
+		return reflect.ValueOf(ConvertToInt64(arg, 0))
+	case reflect.Float64:
+		return reflect.ValueOf(ConvertToFloat64(arg, 0))
+	case reflect.Float32:
+		return reflect.ValueOf(ConvertToFloat(arg, 0))
+	case reflect.Bool:
+		return reflect.ValueOf(ConvertToBool(arg, false))
+	}
+	if reflect.TypeOf(arg).ConvertibleTo(argType) {
+		return reflect.ValueOf(arg).Convert(argType)
+	}
+	return reflect.ValueOf(arg)
+}

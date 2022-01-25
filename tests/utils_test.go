@@ -72,7 +72,7 @@ func TestJoins(t *testing.T) {
 func TestConverts(t *testing.T) {
 	fmt.Println(utils.ConvertToString(true, "false"))
 	fmt.Println(utils.ConvertToString(struct {
-	}{}, "test"))
+	}{}, "tests"))
 }
 
 func TestEachSlice(t *testing.T) {
