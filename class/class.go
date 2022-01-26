@@ -14,28 +14,15 @@ type Class struct {
 	fields map[string]reflect.StructField
 }
 
-type Exception struct {
-	error
-	fields contracts.Fields
-}
-
-func (this Exception) Error() string {
-	return this.error.Error()
-}
-
-func (this Exception) Fields() contracts.Fields {
-	return this.fields
-}
-
 // Make 创建一个类
-func Make(arg interface{}) *Class {
+func Make(arg interface{}) contracts.Class {
 	argType := reflect.TypeOf(arg)
 	if argType.Kind() == reflect.Ptr {
 		argType = argType.Elem()
 	}
 	class := &Class{Type: argType}
 	if argType.Kind() != reflect.Struct {
-		panic(Exception{
+		panic(TypeException{
 			errors.New("只支持 struct 类型"),
 			map[string]interface{}{
 				"class": class.ClassName(),
@@ -75,4 +62,23 @@ func (this *Class) init() {
 			this.fields[field.Name] = field
 		}
 	}
+}
+
+func (this *Class) IsSubClass(class interface{}) bool {
+	if value, ok := class.(reflect.Type); ok {
+		return value.ConvertibleTo(this.Type)
+	}
+
+	return reflect.TypeOf(class).ConvertibleTo(this.Type)
+}
+
+func (this *Class) Implements(class reflect.Type) bool {
+	switch value := class.(type) {
+	case *Interface:
+		return this.Type.Implements(value.Type)
+	case *Class:
+		return this.Type.Implements(value.Type)
+	}
+
+	return this.Type.Implements(class)
 }

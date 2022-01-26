@@ -7,16 +7,16 @@ import (
 	"testing"
 )
 
-type User struct {
-	Name string
+type UserClass struct {
+	Name string `json:"name"`
 }
 
 func TestClass(t *testing.T) {
-	class := class.Make(User{})
+	class := class.Make(UserClass{})
 
 	userInstance := class.New(map[string]interface{}{
 		"name": "goal",
-	}).(User)
+	}).(UserClass)
 
 	fmt.Println(userInstance)
 
