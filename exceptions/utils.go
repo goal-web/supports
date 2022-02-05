@@ -8,6 +8,10 @@ import (
 
 // ResolveException 包装 recover 的返回值
 func ResolveException(v interface{}) contracts.Exception {
+	if v == nil {
+		return nil
+	}
+
 	switch e := v.(type) {
 	case contracts.Exception:
 		return e
