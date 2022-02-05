@@ -14,6 +14,10 @@ type Interface struct {
 	fields map[string]reflect.StructField
 }
 
+func (this *Interface) GetType() reflect.Type {
+	return this.Type
+}
+
 // Define 创建一个接口
 func Define(arg interface{}) contracts.Interface {
 	argType := reflect.TypeOf(arg)

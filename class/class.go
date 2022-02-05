@@ -49,6 +49,10 @@ func (this *Class) ClassName() string {
 	return utils.GetTypeKey(this)
 }
 
+func (this *Class) GetType() reflect.Type {
+	return this.Type
+}
+
 func (this *Class) init() {
 	if this.fields == nil {
 		this.fields = map[string]reflect.StructField{}
