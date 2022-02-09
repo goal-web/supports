@@ -80,3 +80,17 @@ func TestEachSlice(t *testing.T) {
 		fmt.Println(index, value.String())
 	})
 }
+
+/**
+goos: darwin
+goarch: amd64
+pkg: github.com/goal-web/supports/tests
+cpu: Intel(R) Core(TM) i7-7660U CPU @ 2.50GHz
+BenchmarkRandString
+BenchmarkRandString-4   	 4483803	       229.7 ns/op
+*/
+func BenchmarkRandString(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		utils.RandStr(40)
+	}
+}
