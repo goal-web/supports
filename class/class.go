@@ -5,13 +5,28 @@ import (
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/utils"
 	"reflect"
+	"sync"
 )
 
 type Class struct {
 	reflect.Type
 
-	// map[字段名]字段类型
-	fields map[string]reflect.StructField
+	// map[tag名]map[字段名]字段类型
+	fields sync.Map
+}
+
+func (this *Class) NewByTag(data contracts.Fields, tag string) interface{} {
+	object := reflect.New(this.Type)
+
+	if data != nil {
+		for name, field := range this.getFields(tag) {
+			if value, exists := data[name]; exists && field.IsExported() {
+				object.Elem().FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
+			}
+		}
+	}
+
+	return object.Elem().Interface()
 }
 
 // Make 创建一个类
@@ -29,20 +44,33 @@ func Make(arg interface{}) contracts.Class {
 			},
 		})
 	}
-	class.init()
 	return class
 }
 
 func (this *Class) New(data contracts.Fields) interface{} {
-	object := reflect.New(this.Type)
+	return this.NewByTag(data, "json")
+}
 
-	for name, field := range this.fields {
-		if value, exists := data[name]; exists && field.IsExported() {
-			object.Elem().FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
+func (this *Class) getFields(tag string) map[string]reflect.StructField {
+	data, exists := this.fields.Load(tag)
+
+	if !exists {
+		var fields = map[string]reflect.StructField{}
+		for i := 0; i < this.Type.NumField(); i++ {
+			field := this.Type.Field(i)
+			tags := utils.ParseStructTag(field.Tag)
+			if target := tags[tag]; target != nil && len(target) > 0 {
+				fields[target[0]] = field
+			} else {
+				fields[field.Name] = field
+			}
 		}
+
+		this.fields.Store(tag, fields)
+		return fields
 	}
 
-	return object.Elem().Interface()
+	return data.(map[string]reflect.StructField)
 }
 
 func (this *Class) ClassName() string {
@@ -51,21 +79,6 @@ func (this *Class) ClassName() string {
 
 func (this *Class) GetType() reflect.Type {
 	return this.Type
-}
-
-func (this *Class) init() {
-	if this.fields == nil {
-		this.fields = map[string]reflect.StructField{}
-	}
-	for i := 0; i < this.Type.NumField(); i++ {
-		field := this.Type.Field(i)
-		tags := utils.ParseStructTag(field.Tag)
-		if jsonTag := tags["json"]; jsonTag != nil && len(jsonTag) > 0 {
-			this.fields[jsonTag[0]] = field
-		} else {
-			this.fields[field.Name] = field
-		}
-	}
 }
 
 func (this *Class) IsSubClass(class interface{}) bool {

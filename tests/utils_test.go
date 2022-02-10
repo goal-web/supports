@@ -84,7 +84,7 @@ func TestEachSlice(t *testing.T) {
 /**
 goos: darwin
 goarch: amd64
-pkg: github.com/goal-web/supports/tests
+pkg: github.com/goal-web/support/tests
 cpu: Intel(R) Core(TM) i7-7660U CPU @ 2.50GHz
 BenchmarkRandString
 BenchmarkRandString-4   	 4483803	       229.7 ns/op
