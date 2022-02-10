@@ -16,17 +16,21 @@ type Class struct {
 }
 
 func (this *Class) NewByTag(data contracts.Fields, tag string) interface{} {
-	object := reflect.New(this.Type)
+	object := reflect.New(this.Type).Elem()
 
 	if data != nil {
-		for name, field := range this.getFields(tag) {
-			if value, exists := data[name]; exists && field.IsExported() {
-				object.Elem().FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
+		jsonFields := this.getFields("json")
+		targetFields := this.getFields(tag)
+		for key, value := range data {
+			if field, ok := targetFields[key]; ok && field.IsExported() {
+				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
+			} else if field, ok = jsonFields[key]; ok && field.IsExported() {
+				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
 			}
 		}
 	}
 
-	return object.Elem().Interface()
+	return object.Interface()
 }
 
 // Make 创建一个类

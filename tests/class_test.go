@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/class"
 	"github.com/stretchr/testify/assert"
@@ -8,7 +9,8 @@ import (
 )
 
 type User struct {
-	Id int `db:"identify"`
+	Id   int `json:"id" db:"identify"`
+	name string
 }
 
 var UserClass1 = class.Make(new(User))
@@ -20,12 +22,19 @@ func TestDefine(t *testing.T) {
 
 func TestNewByTag(t *testing.T) {
 	user := UserClass1.NewByTag(contracts.Fields{
-		"id":       1,
-		"Id":       1,
 		"identify": 2,
+		"name":     "goal", // 为导出字段不支持解析
 	}, "db").(User)
 
-	assert.True(t, user.Id == 2)
+	fmt.Println("user.Id", user)
+	assert.True(t, user.Id == 2 && user.name == "")
+
+	user = UserClass1.NewByTag(contracts.Fields{
+		"id": 1, // 没有 db 字段没定义，默认就用 json 字段
+	}, "db").(User)
+
+	assert.True(t, user.Id == 1)
+
 }
 
 /**
@@ -34,7 +43,7 @@ goarch: amd64
 pkg: github.com/goal-web/supports/tests
 cpu: Intel(R) Core(TM) i7-7660U CPU @ 2.50GHz
 BenchmarkNewByTag
-BenchmarkNewByTag-4   	 2717953	       388.3 ns/op
+BenchmarkNewByTag-4   	 2916794	       373.4 ns/op
 */
 func BenchmarkNewByTag(b *testing.B) {
 	for i := 0; i < b.N; i++ {
@@ -50,7 +59,7 @@ goarch: amd64
 pkg: github.com/goal-web/supports/tests
 cpu: Intel(R) Core(TM) i7-7660U CPU @ 2.50GHz
 BenchmarkComplexNewByTag
-BenchmarkComplexNewByTag-4   	 2704674	       404.3 ns/op
+BenchmarkComplexNewByTag-4   	 2521668	       491.1 ns/op
 */
 func BenchmarkComplexNewByTag(b *testing.B) {
 	for i := 0; i < b.N; i++ {
