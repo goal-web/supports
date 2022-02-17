@@ -17,7 +17,8 @@ var (
 	Auth  = Define(new(contracts.Auth))
 	Guard = Define(new(contracts.Guard))
 
-	ValidatableForm = Define(new(contracts.ValidatableForm))
+	Validatable    = Define(new(contracts.Validatable))
+	ShouldValidate = Define(new(contracts.ShouldValidate))
 
 	Redis      = Define(new(contracts.RedisConnection))
 	Cache      = Define(new(contracts.CacheStore))
