@@ -5,6 +5,10 @@ import (
 	"github.com/goal-web/contracts"
 )
 
+var (
+	Debug = false
+)
+
 type ApexLogger struct {
 	Entry *log.Entry
 }
@@ -66,7 +70,9 @@ func (this ApexLogger) Warn(msg string) {
 }
 
 func (this ApexLogger) Debug(msg string) {
-	this.Entry.Debug(msg)
+	if Debug {
+		this.Entry.Debug(msg)
+	}
 }
 
 func (this ApexLogger) Error(msg string) {
