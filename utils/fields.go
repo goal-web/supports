@@ -7,6 +7,30 @@ import (
 	"strings"
 )
 
+// OnlyFields 只获取指定 key 的数据
+func OnlyFields(fields contracts.Fields, keys ...string) contracts.Fields {
+	var results = make(contracts.Fields)
+
+	for _, key := range keys {
+		results[key] = fields[key]
+	}
+
+	return results
+}
+
+// OnlyExistsFields 只获取指定 key ，不存在或者 nil 则忽略
+func OnlyExistsFields(fields contracts.Fields, keys ...string) contracts.Fields {
+	var results = make(contracts.Fields)
+
+	for _, key := range keys {
+		if value := fields[key]; value != nil {
+			results[key] = value
+		}
+	}
+
+	return results
+}
+
 // MergeFields 合并两个 contracts.Fields
 func MergeFields(fields contracts.Fields, finalFields contracts.Fields) {
 	for key, value := range finalFields {
