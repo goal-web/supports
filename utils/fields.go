@@ -34,9 +34,9 @@ func ExceptFields(fields contracts.Fields, keys ...string) contracts.Fields {
 		keysMap = MakeKeysMap(keys...)
 	)
 
-	for _, key := range keys {
+	for key, value := range fields {
 		if _, exists := keysMap[key]; !exists {
-			results[key] = fields[key]
+			results[key] = value
 		}
 	}
 
