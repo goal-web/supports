@@ -23,6 +23,28 @@ func (this *BaseFields) get(key string) interface{} {
 	return this.Fields()[key]
 }
 
+func (this *BaseFields) Only(keys ...string) contracts.Fields {
+	var fields = make(contracts.Fields)
+
+	for _, key := range keys {
+		fields[key] = this.get(key)
+	}
+
+	return fields
+}
+
+func (this *BaseFields) OnlyExists(keys ...string) contracts.Fields {
+	var fields = make(contracts.Fields)
+
+	for _, key := range keys {
+		if value := this.get(key); value != nil {
+			fields[key] = value
+		}
+	}
+
+	return fields
+}
+
 func (this *BaseFields) StringOption(key string, defaultValue string) string {
 	if value := this.get(key); value != nil && value != "" {
 		return utils.ConvertToString(value, defaultValue)
