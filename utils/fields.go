@@ -18,6 +18,31 @@ func OnlyFields(fields contracts.Fields, keys ...string) contracts.Fields {
 	return results
 }
 
+func MakeKeysMap(keys ...string) contracts.Fields {
+	var keysMap = contracts.Fields{}
+	for _, key := range keys {
+		keysMap[key] = 1
+	}
+
+	return keysMap
+}
+
+// ExceptFields 只获取指定 key 以外的数据
+func ExceptFields(fields contracts.Fields, keys ...string) contracts.Fields {
+	var (
+		results = make(contracts.Fields)
+		keysMap = MakeKeysMap(keys...)
+	)
+
+	for _, key := range keys {
+		if _, exists := keysMap[key]; !exists {
+			results[key] = fields[key]
+		}
+	}
+
+	return results
+}
+
 // OnlyExistsFields 只获取指定 key ，不存在或者 nil 则忽略
 func OnlyExistsFields(fields contracts.Fields, keys ...string) contracts.Fields {
 	var results = make(contracts.Fields)

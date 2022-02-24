@@ -33,6 +33,21 @@ func (this *BaseFields) Only(keys ...string) contracts.Fields {
 	return fields
 }
 
+func (this *BaseFields) ExceptFields(keys ...string) contracts.Fields {
+	var (
+		results = make(contracts.Fields)
+		keysMap = utils.MakeKeysMap(keys...)
+	)
+
+	for _, key := range keys {
+		if _, exists := keysMap[key]; !exists {
+			results[key] = this.get(key)
+		}
+	}
+
+	return results
+}
+
 func (this *BaseFields) OnlyExists(keys ...string) contracts.Fields {
 	var fields = make(contracts.Fields)
 
