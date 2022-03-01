@@ -38,6 +38,12 @@ func ConvertToInt64(rawValue interface{}, defaultValue int64) int64 {
 		} else {
 			return 0
 		}
+	case []rune:
+		i64, _ := strconv.ParseInt(string(value), 10, 32)
+		return i64
+	case []byte:
+		i64, _ := strconv.ParseInt(string(value), 10, 32)
+		return i64
 	case string:
 		i64, _ := strconv.ParseInt(value, 10, 64)
 		return i64
@@ -79,6 +85,12 @@ func ConvertToInt(rawValue interface{}, defaultValue int) int {
 		} else {
 			return 0
 		}
+	case []rune:
+		i64, _ := strconv.ParseInt(string(value), 10, 32)
+		return int(i64)
+	case []byte:
+		i64, _ := strconv.ParseInt(string(value), 10, 32)
+		return int(i64)
 	case string:
 		i64, _ := strconv.ParseInt(value, 10, 32)
 		return int(i64)
@@ -120,6 +132,12 @@ func ConvertToFloat64(rawValue interface{}, defaultValue float64) float64 {
 		} else {
 			return 0
 		}
+	case []rune:
+		f64, _ := strconv.ParseFloat(string(value), 64)
+		return f64
+	case []byte:
+		f64, _ := strconv.ParseFloat(string(value), 64)
+		return f64
 	case string:
 		f64, _ := strconv.ParseFloat(value, 64)
 		return f64
@@ -163,6 +181,12 @@ func ConvertToFloat(rawValue interface{}, defaultValue float32) float32 {
 		}
 	case string:
 		f64, _ := strconv.ParseFloat(value, 32)
+		return float32(f64)
+	case []rune:
+		f64, _ := strconv.ParseFloat(string(value), 32)
+		return float32(f64)
+	case []byte:
+		f64, _ := strconv.ParseFloat(string(value), 32)
 		return float32(f64)
 	}
 

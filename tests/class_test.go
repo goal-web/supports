@@ -32,9 +32,13 @@ func TestNewByTag(t *testing.T) {
 	user = UserClass1.NewByTag(contracts.Fields{
 		"id": 1, // 没有 db 字段没定义，默认就用 json 字段
 	}, "db").(User)
-
 	assert.True(t, user.Id == 1)
 
+	var user1 = UserClass1.NewByTag(contracts.Fields{
+		"id": []byte("1"), // 没有 db 字段没定义，默认就用 json 字段
+	}, "db").(User)
+	assert.True(t, user1.Id == 1)
+	fmt.Println(user1)
 }
 
 /**
