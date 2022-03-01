@@ -27,7 +27,9 @@ func (this *BaseFields) Only(keys ...string) contracts.Fields {
 	var fields = make(contracts.Fields)
 
 	for _, key := range keys {
-		fields[key] = this.get(key)
+		if value := this.get(key); value != nil {
+			fields[key] = value
+		}
 	}
 
 	return fields
