@@ -20,7 +20,7 @@ func LoadEnv(envPath, sep string) (contracts.Fields, error) {
 		}
 		values := strings.Split(line, sep)
 		if len(values) > 1 {
-			fields[values[0]] = strings.ReplaceAll(strings.Join(values[1:], sep), `"`, "")
+			fields[values[0]] = strings.Trim(strings.ReplaceAll(strings.Join(values[1:], sep), `"`, ""), "\r\t\v\x00")
 		}
 	}
 
