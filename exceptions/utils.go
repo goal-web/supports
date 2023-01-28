@@ -15,25 +15,23 @@ func ResolveException(v interface{}) contracts.Exception {
 	switch e := v.(type) {
 	case contracts.Exception:
 		return e
-	case error:
-		return WithError(e, contracts.Fields{})
 	case string:
-		return WithError(errors.New(e), contracts.Fields{})
+		return WithError(errors.New(e))
 	case contracts.Fields:
 		if e["error"] != nil {
-			return WithError(fmt.Errorf("%v", e["error"]), e)
+			return WithError(fmt.Errorf("%v", e["error"]))
 		}
 		if e["msg"] != nil {
-			return WithError(fmt.Errorf("%v", e["msg"]), e)
+			return WithError(fmt.Errorf("%v", e["msg"]))
 		}
 		if e["message"] != nil {
-			return WithError(fmt.Errorf("%v", e["message"]), e)
+			return WithError(fmt.Errorf("%v", e["message"]))
 		}
 		if e["err"] != nil {
-			return WithError(fmt.Errorf("%v", e["err"]), e)
+			return WithError(fmt.Errorf("%v", e["err"]))
 		}
-		return WithError(errors.New("Server exception"), e)
+		return WithError(errors.New("Server exception"))
 	default:
-		return New("Server exception", contracts.Fields{"err": v})
+		return New("Server exception")
 	}
 }

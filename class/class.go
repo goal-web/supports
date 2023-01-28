@@ -15,12 +15,12 @@ type Class struct {
 	fields sync.Map
 }
 
-func (this *Class) NewByTag(data contracts.Fields, tag string) interface{} {
-	object := reflect.New(this.Type).Elem()
+func (c *Class) NewByTag(data contracts.Fields, tag string) interface{} {
+	object := reflect.New(c.Type).Elem()
 
 	if data != nil {
-		jsonFields := this.getFields("json")
-		targetFields := this.getFields(tag)
+		jsonFields := c.getFields("json")
+		targetFields := c.getFields(tag)
 		for key, value := range data {
 			if field, ok := targetFields[key]; ok && field.IsExported() {
 				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
@@ -41,27 +41,22 @@ func Make(arg interface{}) contracts.Class {
 	}
 	class := &Class{Type: argType}
 	if argType.Kind() != reflect.Struct {
-		panic(TypeException{
-			errors.New("只支持 struct 类型"),
-			map[string]interface{}{
-				"class": class.ClassName(),
-			},
-		})
+		panic(TypeException{Err: errors.New("只支持 struct 类型")})
 	}
 	return class
 }
 
-func (this *Class) New(data contracts.Fields) interface{} {
-	return this.NewByTag(data, "json")
+func (c *Class) New(data contracts.Fields) interface{} {
+	return c.NewByTag(data, "json")
 }
 
-func (this *Class) getFields(tag string) map[string]reflect.StructField {
-	data, exists := this.fields.Load(tag)
+func (c *Class) getFields(tag string) map[string]reflect.StructField {
+	data, exists := c.fields.Load(tag)
 
 	if !exists {
 		var fields = map[string]reflect.StructField{}
-		for i := 0; i < this.Type.NumField(); i++ {
-			field := this.Type.Field(i)
+		for i := 0; i < c.Type.NumField(); i++ {
+			field := c.Type.Field(i)
 			tags := utils.ParseStructTag(field.Tag)
 			if target := tags[tag]; target != nil && len(target) > 0 {
 				fields[target[0]] = field
@@ -70,36 +65,36 @@ func (this *Class) getFields(tag string) map[string]reflect.StructField {
 			}
 		}
 
-		this.fields.Store(tag, fields)
+		c.fields.Store(tag, fields)
 		return fields
 	}
 
 	return data.(map[string]reflect.StructField)
 }
 
-func (this *Class) ClassName() string {
-	return utils.GetTypeKey(this)
+func (c *Class) ClassName() string {
+	return utils.GetTypeKey(c)
 }
 
-func (this *Class) GetType() reflect.Type {
-	return this.Type
+func (c *Class) GetType() reflect.Type {
+	return c.Type
 }
 
-func (this *Class) IsSubClass(class interface{}) bool {
+func (c *Class) IsSubClass(class interface{}) bool {
 	if value, ok := class.(reflect.Type); ok {
-		return value.ConvertibleTo(this.Type)
+		return value.ConvertibleTo(c.Type)
 	}
 
-	return reflect.TypeOf(class).ConvertibleTo(this.Type)
+	return reflect.TypeOf(class).ConvertibleTo(c.Type)
 }
 
-func (this *Class) Implements(class reflect.Type) bool {
+func (c *Class) Implements(class reflect.Type) bool {
 	switch value := class.(type) {
 	case *Interface:
-		return this.Type.Implements(value.Type)
+		return c.Type.Implements(value.Type)
 	case *Class:
-		return this.Type.Implements(value.Type)
+		return c.Type.Implements(value.Type)
 	}
 
-	return this.Type.Implements(class)
+	return c.Type.Implements(class)
 }

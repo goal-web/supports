@@ -26,12 +26,7 @@ func Define(arg interface{}) contracts.Interface {
 	}
 	class := &Interface{Type: argType}
 	if argType.Kind() != reflect.Interface {
-		panic(TypeException{
-			errors.New("只支持 interface 类型"),
-			map[string]interface{}{
-				"class": class.ClassName(),
-			},
-		})
+		panic(TypeException{Err: errors.New("只支持 interface 类型")})
 	}
 	return class
 }

@@ -26,14 +26,14 @@ func Base(signature, description string) Command {
 	}
 }
 
-func (this *Command) InjectArguments(arguments contracts.CommandArguments) error {
+func (cmd *Command) InjectArguments(arguments contracts.CommandArguments) error {
 	argIndex := 0
-	for _, arg := range this.args {
+	for _, arg := range cmd.args {
 		switch arg.Type {
 		case RequiredArg:
 			argValue := arguments.GetArg(argIndex)
 			if argValue == "" {
-				if this.Exists(arg.Name) {
+				if cmd.Exists(arg.Name) {
 					arguments.SetOption(arg.Name, arguments.Fields()[arg.Name])
 				} else {
 					return errors.New(fmt.Sprintf("Missing required parameter：%s - %s", arg.Name, arg.Description))
@@ -57,19 +57,19 @@ func (this *Command) InjectArguments(arguments contracts.CommandArguments) error
 		}
 	}
 
-	this.CommandArguments = arguments
+	cmd.CommandArguments = arguments
 	return nil
 }
 
-func (this *Command) GetSignature() string {
-	return this.Signature
+func (cmd *Command) GetSignature() string {
+	return cmd.Signature
 }
-func (this *Command) GetDescription() string {
-	return this.Description
+func (cmd *Command) GetDescription() string {
+	return cmd.Description
 }
-func (this *Command) GetName() string {
-	return this.Name
+func (cmd *Command) GetName() string {
+	return cmd.Name
 }
-func (this *Command) GetHelp() string {
-	return this.Help
+func (cmd *Command) GetHelp() string {
+	return cmd.Help
 }

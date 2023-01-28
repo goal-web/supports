@@ -6,33 +6,31 @@ import (
 	"github.com/pkg/errors"
 )
 
-func WithError(err error, fields contracts.Fields) contracts.Exception {
+func WithError(err error) contracts.Exception {
 	if e, isException := err.(contracts.Exception); isException {
 		return e
 	}
-	return New(err.Error(), fields)
+	return New(err.Error())
 }
 
-func WithRecover(err interface{}, fields contracts.Fields) contracts.Exception {
+func WithRecover(err interface{}) contracts.Exception {
 	switch e := err.(type) {
 	case contracts.Exception:
 		return e
-	case error:
-		return WithError(e, fields)
 	case string:
-		return New(e, fields)
+		return New(e)
 	case fmt.Stringer:
-		return New(e.String(), fields)
+		return New(e.String())
 	}
-	return New(fmt.Sprintf("%v", err), fields)
+	return New(fmt.Sprintf("%v", err))
 }
 
-func WithPrevious(err error, fields contracts.Fields, previous contracts.Exception) Exception {
-	return Exception{err, fields, previous}
+func WithPrevious(err error, previous *contracts.Exception) Exception {
+	return Exception{err, previous}
 }
 
-func New(err string, fields contracts.Fields) Exception {
-	return Exception{errors.New(err), fields, nil}
+func New(err string) contracts.Exception {
+	return &Exception{errors.New(err), nil}
 }
 
 func Throw(err interface{}) {
@@ -42,11 +40,14 @@ func Throw(err interface{}) {
 }
 
 type Exception struct {
-	error
-	fields   contracts.Fields
-	previous contracts.Exception
+	Err      error
+	Previous *contracts.Exception
 }
 
-func (e Exception) Fields() contracts.Fields {
-	return e.fields
+func (e *Exception) Error() string {
+	return e.Err.Error()
+}
+
+func (e *Exception) GetPrevious() *contracts.Exception {
+	return e.Previous
 }
