@@ -14,8 +14,8 @@ type Interface struct {
 	fields map[string]reflect.StructField
 }
 
-func (this *Interface) GetType() reflect.Type {
-	return this.Type
+func (i *Interface) GetType() reflect.Type {
+	return i.Type
 }
 
 // Define 创建一个接口
@@ -31,25 +31,25 @@ func Define(arg interface{}) contracts.Interface {
 	return class
 }
 
-func (this *Interface) ClassName() string {
-	return utils.GetTypeKey(this)
+func (i *Interface) ClassName() string {
+	return utils.GetTypeKey(i)
 }
 
-func (this *Interface) IsSubClass(class interface{}) bool {
+func (i *Interface) IsSubClass(class interface{}) bool {
 	if value, ok := class.(reflect.Type); ok {
-		return value.ConvertibleTo(this.Type)
+		return value.ConvertibleTo(i.Type)
 	}
 
-	return reflect.TypeOf(class).ConvertibleTo(this.Type)
+	return reflect.TypeOf(class).ConvertibleTo(i.Type)
 }
 
-func (this *Interface) Implements(class reflect.Type) bool {
+func (i *Interface) Implements(class reflect.Type) bool {
 	switch value := class.(type) {
 	case *Interface:
-		return this.Type.Implements(value.Type)
+		return i.Type.Implements(value.Type)
 	case *Class:
 		return false
 	}
 
-	return this.Type.Implements(class)
+	return i.Type.Implements(class)
 }
