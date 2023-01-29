@@ -25,7 +25,7 @@ func WithRecover(err interface{}) contracts.Exception {
 	return New(fmt.Sprintf("%v", err))
 }
 
-func WithPrevious(err error, previous *contracts.Exception) Exception {
+func WithPrevious(err error, previous contracts.Exception) Exception {
 	return Exception{err, previous}
 }
 
@@ -41,13 +41,13 @@ func Throw(err interface{}) {
 
 type Exception struct {
 	Err      error
-	Previous *contracts.Exception
+	Previous contracts.Exception
 }
 
 func (e *Exception) Error() string {
 	return e.Err.Error()
 }
 
-func (e *Exception) GetPrevious() *contracts.Exception {
+func (e *Exception) GetPrevious() contracts.Exception {
 	return e.Previous
 }
