@@ -1,6 +1,6 @@
 module github.com/goal-web/supports
 
-go 1.17
+go 1.19
 
 require (
 	github.com/apex/log v1.9.0
