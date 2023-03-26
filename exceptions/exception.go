@@ -13,7 +13,7 @@ func WithError(err error) contracts.Exception {
 	return New(err.Error())
 }
 
-func WithRecover(err interface{}) contracts.Exception {
+func WithRecover(err any) contracts.Exception {
 	switch e := err.(type) {
 	case contracts.Exception:
 		return e
@@ -33,7 +33,7 @@ func New(err string) contracts.Exception {
 	return &Exception{errors.New(err), nil}
 }
 
-func Throw(err interface{}) {
+func Throw(err any) {
 	if err != nil {
 		panic(ResolveException(err))
 	}

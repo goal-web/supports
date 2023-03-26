@@ -5,9 +5,9 @@ import (
 	"reflect"
 )
 
-type CompareHandler func(comparable interface{}, arg interface{}) bool
+type CompareHandler func(comparable any, arg any) bool
 
-func Compare(comparable interface{}, operator string, arg interface{}) bool {
+func Compare(comparable any, operator string, arg any) bool {
 	switch operator {
 	case "=", "eq":
 		return IsEqual(comparable, arg)
@@ -28,7 +28,7 @@ func Compare(comparable interface{}, operator string, arg interface{}) bool {
 }
 
 // IsEqual 等于 =
-func IsEqual(comparable interface{}, arg interface{}) bool {
+func IsEqual(comparable any, arg any) bool {
 	comparableType := reflect.TypeOf(comparable)
 	argType := reflect.TypeOf(arg)
 
@@ -83,7 +83,7 @@ func IsEqual(comparable interface{}, arg interface{}) bool {
 }
 
 // IsIn 存在 in
-func IsIn(comparable interface{}, arg interface{}) (result bool) {
+func IsIn(comparable any, arg any) (result bool) {
 	argValue := reflect.ValueOf(arg)
 	if !IsArray(argValue) {
 		return false
@@ -98,7 +98,7 @@ func IsIn(comparable interface{}, arg interface{}) (result bool) {
 }
 
 // IsNotIn 不存在 not in
-func IsNotIn(comparable interface{}, arg interface{}) (result bool) {
+func IsNotIn(comparable any, arg any) (result bool) {
 	argValue := reflect.ValueOf(arg)
 	if !IsArray(argValue) {
 		return false
@@ -112,27 +112,27 @@ func IsNotIn(comparable interface{}, arg interface{}) (result bool) {
 }
 
 // IsLt 小于 <
-func IsLt(comparable interface{}, arg interface{}) bool {
+func IsLt(comparable any, arg any) bool {
 	return ConvertToFloat64(comparable, 0) < ConvertToFloat64(arg, 0)
 }
 
 // IsLte 小于等于 <=
-func IsLte(comparable interface{}, arg interface{}) bool {
+func IsLte(comparable any, arg any) bool {
 	return ConvertToFloat64(comparable, 0) <= ConvertToFloat64(arg, 0)
 }
 
 // IsGt 大于 >
-func IsGt(comparable interface{}, arg interface{}) bool {
+func IsGt(comparable any, arg any) bool {
 	return ConvertToFloat64(comparable, 0) > ConvertToFloat64(arg, 0)
 }
 
 // IsGte 大于等于
-func IsGte(comparable interface{}, arg interface{}) bool {
+func IsGte(comparable any, arg any) bool {
 	return ConvertToFloat64(comparable, 0) >= ConvertToFloat64(arg, 0)
 }
 
 // IsArray 是否是数组或者 slice
-func IsArray(comparable interface{}) bool {
+func IsArray(comparable any) bool {
 	switch value := comparable.(type) {
 	case reflect.Type:
 		return value.Kind() == reflect.Slice || value.Kind() == reflect.Array

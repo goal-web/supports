@@ -126,7 +126,7 @@ func DefaultBool(values []bool, defaultValue ...bool) bool {
 	return false
 }
 
-func DefaultInterface(values []interface{}, defaultValue ...interface{}) interface{} {
+func DefaultInterface(values []any, defaultValue ...any) any {
 	if len(values) > 0 {
 		return values[0]
 	}

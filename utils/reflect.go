@@ -11,7 +11,7 @@ var (
 	UnCallable = errors.New("不可调用的参数！")
 )
 
-func GetCallable(arg interface{}) (reflect.Value, error) {
+func GetCallable(arg any) (reflect.Value, error) {
 	argValue := reflect.ValueOf(arg)
 
 	if argValue.Kind() == reflect.Func {
@@ -22,7 +22,7 @@ func GetCallable(arg interface{}) (reflect.Value, error) {
 }
 
 // IsSameStruct 判断是否同一个结构体
-func IsSameStruct(v1, v2 interface{}) bool {
+func IsSameStruct(v1, v2 any) bool {
 	var (
 		f1 reflect.Type
 		f2 reflect.Type
@@ -41,7 +41,7 @@ func IsSameStruct(v1, v2 interface{}) bool {
 }
 
 // ConvertToTypes 把变量转换成反射类型
-func ConvertToTypes(args ...interface{}) []reflect.Type {
+func ConvertToTypes(args ...any) []reflect.Type {
 	types := make([]reflect.Type, 0)
 	for _, arg := range args {
 		types = append(types, reflect.TypeOf(arg))
@@ -50,7 +50,7 @@ func ConvertToTypes(args ...interface{}) []reflect.Type {
 }
 
 // IsInstanceIn InstanceIn 判断变量是否是某些类型
-func IsInstanceIn(v interface{}, types ...reflect.Type) bool {
+func IsInstanceIn(v any, types ...reflect.Type) bool {
 	for _, e := range types {
 		if IsSameStruct(e, v) {
 			return true
@@ -60,7 +60,7 @@ func IsInstanceIn(v interface{}, types ...reflect.Type) bool {
 }
 
 // EachStructField 遍历结构体的字段
-func EachStructField(value reflect.Value, data interface{}, handler func(reflect.StructField, reflect.Value)) {
+func EachStructField(value reflect.Value, data any, handler func(reflect.StructField, reflect.Value)) {
 	dataType := reflect.TypeOf(data)
 
 	for i := 0; i < dataType.NumField(); i++ {
@@ -96,12 +96,12 @@ func GetTypeKey(p reflect.Type) string {
 }
 
 // NotNil 尽量不要 nil
-func NotNil(args ...interface{}) interface{} {
+func NotNil(args ...any) any {
 	for _, arg := range args {
 		switch argValue := arg.(type) {
 		case contracts.InstanceProvider:
 			arg = argValue()
-		case func() interface{}:
+		case func() any:
 			arg = argValue()
 		}
 		if arg != nil {
@@ -126,7 +126,7 @@ func ParseStructTag(rawTag reflect.StructTag) map[string][]string {
 }
 
 // ConvertToValue 把 interface 转换成指定类型的 reflect.Value
-func ConvertToValue(argType reflect.Type, arg interface{}) reflect.Value {
+func ConvertToValue(argType reflect.Type, arg any) reflect.Value {
 	switch argType.Kind() {
 	case reflect.String:
 		return reflect.ValueOf(ConvertToString(arg, ""))

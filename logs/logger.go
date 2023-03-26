@@ -21,10 +21,10 @@ func Default() contracts.Logger {
 	return &ApexLogger{Entry: log.WithFields(log.Fields(contracts.Fields{}))}
 }
 
-func WithInterface(value interface{}) contracts.Logger {
+func WithInterface(value any) contracts.Logger {
 	return WithField("value", value)
 }
 
-func WithField(key string, value interface{}) contracts.Logger {
+func WithField(key string, value any) contracts.Logger {
 	return &ApexLogger{Entry: log.WithField(key, value)}
 }

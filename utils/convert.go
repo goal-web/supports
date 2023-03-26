@@ -6,7 +6,7 @@ import (
 )
 
 // ConvertToInt64 把能转换成 int64 的值转换成 int64
-func ConvertToInt64(rawValue interface{}, defaultValue int64) int64 {
+func ConvertToInt64(rawValue any, defaultValue int64) int64 {
 	switch value := rawValue.(type) {
 	case int64:
 		return value
@@ -53,7 +53,7 @@ func ConvertToInt64(rawValue interface{}, defaultValue int64) int64 {
 }
 
 // ConvertToInt 把能转换成 int 的值转换成 int
-func ConvertToInt(rawValue interface{}, defaultValue int) int {
+func ConvertToInt(rawValue any, defaultValue int) int {
 	switch value := rawValue.(type) {
 	case int64:
 		return int(value)
@@ -100,7 +100,7 @@ func ConvertToInt(rawValue interface{}, defaultValue int) int {
 }
 
 // ConvertToFloat64 把能转换成 float64 的值转换成 float64
-func ConvertToFloat64(rawValue interface{}, defaultValue float64) float64 {
+func ConvertToFloat64(rawValue any, defaultValue float64) float64 {
 	switch value := rawValue.(type) {
 	case float64:
 		return value
@@ -147,7 +147,7 @@ func ConvertToFloat64(rawValue interface{}, defaultValue float64) float64 {
 }
 
 // ConvertToFloat 把能转换成 float32 的值转换成 float32
-func ConvertToFloat(rawValue interface{}, defaultValue float32) float32 {
+func ConvertToFloat(rawValue any, defaultValue float32) float32 {
 	switch value := rawValue.(type) {
 	case float64:
 		return float32(value)
@@ -194,7 +194,7 @@ func ConvertToFloat(rawValue interface{}, defaultValue float32) float32 {
 }
 
 // ConvertToBool 把能转换成 bool 的值转换成 bool
-func ConvertToBool(rawValue interface{}, defaultValue bool) bool {
+func ConvertToBool(rawValue any, defaultValue bool) bool {
 	switch value := rawValue.(type) {
 	case bool:
 		return value
@@ -213,7 +213,7 @@ func ConvertToBool(rawValue interface{}, defaultValue bool) bool {
 }
 
 // ConvertToString 把能转换成 string 的值转换成 string
-func ConvertToString(rawValue interface{}, defaultValue string) string {
+func ConvertToString(rawValue any, defaultValue string) string {
 	switch value := rawValue.(type) {
 	case bool:
 		return IfString(value, "true", "false")
@@ -229,7 +229,7 @@ func ConvertToString(rawValue interface{}, defaultValue string) string {
 		return fmt.Sprintf("%d", value)
 	case float32, float64:
 		return fmt.Sprintf("%f", value)
-		//case interface{}:
+		//case any:
 		//	return fmt.Sprintf("%v", value)
 	}
 

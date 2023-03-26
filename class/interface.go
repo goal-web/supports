@@ -19,7 +19,7 @@ func (i *Interface) GetType() reflect.Type {
 }
 
 // Define 创建一个接口
-func Define(arg interface{}) contracts.Interface {
+func Define(arg any) contracts.Interface {
 	argType := reflect.TypeOf(arg)
 	if argType.Kind() == reflect.Ptr {
 		argType = argType.Elem()
@@ -35,7 +35,7 @@ func (i *Interface) ClassName() string {
 	return utils.GetTypeKey(i)
 }
 
-func (i *Interface) IsSubClass(class interface{}) bool {
+func (i *Interface) IsSubClass(class any) bool {
 	if value, ok := class.(reflect.Type); ok {
 		return value.ConvertibleTo(i.Type)
 	}

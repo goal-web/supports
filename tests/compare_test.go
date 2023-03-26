@@ -42,7 +42,7 @@ func TestCompareIsEqual(t *testing.T) {
 	// 值不一致 false
 	assert.False(t, utils.IsEqual([]int{1, 2}, []int{1, 2, 44}))
 	// 值一致 true
-	assert.True(t, utils.IsEqual([]int{1, 2}, []interface{}{1, 2}))
+	assert.True(t, utils.IsEqual([]int{1, 2}, []any{1, 2}))
 	assert.True(t, utils.IsEqual([]int{1, 2}, []float64{1, 2}))
 }
 
@@ -51,19 +51,19 @@ func TestOtherCompare(t *testing.T) {
 	// 值存在 true
 	assert.True(t, utils.IsIn(1, []float32{1, 2.5}))
 	// 可转换的值存在 true
-	assert.True(t, utils.IsIn(1, []interface{}{"1"}))
+	assert.True(t, utils.IsIn(1, []any{"1"}))
 	// 值不存在 false
-	assert.False(t, utils.IsIn(100, []interface{}{"1"}))
+	assert.False(t, utils.IsIn(100, []any{"1"}))
 	// 第二个参数类型不是 array或者slice false
 	assert.False(t, utils.IsIn(1, 2))
 
 	// 判断不存在
 	// 值不存在 true
-	assert.True(t, utils.IsNotIn(100, []interface{}{"1"}))
+	assert.True(t, utils.IsNotIn(100, []any{"1"}))
 	// 可转换的值存在 false
-	assert.False(t, utils.IsNotIn(1, []interface{}{"1"}))
+	assert.False(t, utils.IsNotIn(1, []any{"1"}))
 	// 值存在 false
-	assert.False(t, utils.IsNotIn(1, []interface{}{1}))
+	assert.False(t, utils.IsNotIn(1, []any{1}))
 	assert.False(t, utils.IsNotIn(1, []int{1}))
 	// 第二个参数类型不是 array或者slice false
 	assert.False(t, utils.IsNotIn(1, 2))

@@ -15,7 +15,7 @@ type Class struct {
 	fields sync.Map
 }
 
-func (c *Class) NewByTag(data contracts.Fields, tag string) interface{} {
+func (c *Class) NewByTag(data contracts.Fields, tag string) any {
 	object := reflect.New(c.Type).Elem()
 
 	if data != nil {
@@ -34,7 +34,7 @@ func (c *Class) NewByTag(data contracts.Fields, tag string) interface{} {
 }
 
 // Make 创建一个类
-func Make(arg interface{}) contracts.Class {
+func Make(arg any) contracts.Class {
 	argType := reflect.TypeOf(arg)
 	if argType.Kind() == reflect.Ptr {
 		argType = argType.Elem()
@@ -46,7 +46,7 @@ func Make(arg interface{}) contracts.Class {
 	return class
 }
 
-func (c *Class) New(data contracts.Fields) interface{} {
+func (c *Class) New(data contracts.Fields) any {
 	return c.NewByTag(data, "json")
 }
 
@@ -80,7 +80,7 @@ func (c *Class) GetType() reflect.Type {
 	return c.Type
 }
 
-func (c *Class) IsSubClass(class interface{}) bool {
+func (c *Class) IsSubClass(class any) bool {
 	if value, ok := class.(reflect.Type); ok {
 		return value.ConvertibleTo(c.Type)
 	}

@@ -25,7 +25,7 @@ func (apex *ApexLogger) WithFields(m contracts.Fields) contracts.Logger {
 	return apex
 }
 
-func (apex *ApexLogger) WithField(key string, value interface{}) contracts.Logger {
+func (apex *ApexLogger) WithField(key string, value any) contracts.Logger {
 	if apex == nil || apex.Entry == nil {
 		return &ApexLogger{
 			Entry: log.WithField(key, value),

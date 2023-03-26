@@ -24,7 +24,7 @@ func TestWithField(t *testing.T) {
 	logs.WithError(errors.New("报错了")).WithField("field1", "1").Info("info数据")
 
 	wg.Add(1)
-	go (func() interface{} {
+	go (func() any {
 		logs.WithError(errors.New("协程里面报错了")).WithField("field1", "1").Info("info数据")
 		wg.Done()
 		return nil

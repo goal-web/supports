@@ -18,7 +18,7 @@ const (
 type Arg struct {
 	Name        string
 	Type        ArgType
-	Default     interface{}
+	Default     any
 	Description string
 }
 
@@ -31,7 +31,7 @@ func (args Args) Help() string {
 	return "该命令无参数"
 }
 
-func NewArg(name string, argType ArgType, defaultValue interface{}) Arg {
+func NewArg(name string, argType ArgType, defaultValue any) Arg {
 	if names := strings.Split(name, ":"); len(names) > 1 { // 有定义描述
 		return Arg{
 			Name:        names[0],

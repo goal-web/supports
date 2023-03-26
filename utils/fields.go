@@ -177,12 +177,12 @@ func GetBoolField(fields contracts.Fields, key string, defaultValues ...bool) bo
 }
 
 // ConvertToFields 尝试把一个变量转换成 Fields 类型
-func ConvertToFields(anyValue interface{}) (contracts.Fields, error) {
+func ConvertToFields(anyValue any) (contracts.Fields, error) {
 	fields := contracts.Fields{}
 	switch paramValue := anyValue.(type) {
 	case contracts.Fields:
 		fields = paramValue
-	case map[string]interface{}:
+	case map[string]any:
 		for key, value := range paramValue {
 			fields[key] = value
 		}

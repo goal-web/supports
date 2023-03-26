@@ -13,7 +13,7 @@ import (
 
 func TestMergeFields(t *testing.T) {
 	fields1 := contracts.Fields{"a": "a"}
-	utils.MergeFields(fields1, map[string]interface{}{
+	utils.MergeFields(fields1, map[string]any{
 		"a":          "b",
 		"int":        1,
 		"bool":       true,
@@ -66,7 +66,7 @@ func TestJoins(t *testing.T) {
 	fmt.Println(utils.JoinFloatArray([]float32{0, 1, 3.555}, ","))
 	fmt.Println(utils.JoinIntArray([]int{0, 1, 3}, ","))
 	fmt.Println(utils.JoinInt64Array([]int64{0, 1, 44}, ","))
-	fmt.Println(utils.JoinInterfaceArray([]interface{}{0, 1, 44, "aaa", errors.New("错误")}, ","))
+	fmt.Println(utils.JoinInterfaceArray([]any{0, 1, 44, "aaa", errors.New("错误")}, ","))
 }
 
 func TestConverts(t *testing.T) {
@@ -81,7 +81,8 @@ func TestEachSlice(t *testing.T) {
 	})
 }
 
-/**
+/*
+*
 goos: darwin
 goarch: amd64
 pkg: github.com/goal-web/support/tests

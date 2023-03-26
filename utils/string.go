@@ -30,7 +30,7 @@ func IfString(condition bool, str1 string, otherStr ...string) string {
 }
 
 // Ifi 类似三目运算，返回第一个不是 nil 的值
-func Ifi(condition bool, value interface{}, others ...interface{}) interface{} {
+func Ifi(condition bool, value any, others ...any) any {
 	if condition {
 		return value
 	}
@@ -156,7 +156,7 @@ func JoinFloat64Array(arr []float64, sep string) (result string) {
 }
 
 // JoinInterfaceArray 连接 interface 数组，类似 strings.Join
-func JoinInterfaceArray(arr []interface{}, sep string) (result string) {
+func JoinInterfaceArray(arr []any, sep string) (result string) {
 	for index, v := range arr {
 		if index == 0 {
 			result = fmt.Sprintf("%v", v)
@@ -175,8 +175,8 @@ func MakeSymbolArray(symbol string, num int) (result []string) {
 	return
 }
 
-// StringArray2InterfaceArray 把字符串数组转成 interface{} 数组
-func StringArray2InterfaceArray(args []string) (result []interface{}) {
+// StringArray2InterfaceArray 把字符串数组转成 any 数组
+func StringArray2InterfaceArray(args []string) (result []any) {
 	for _, arg := range args {
 		result = append(result, arg)
 	}

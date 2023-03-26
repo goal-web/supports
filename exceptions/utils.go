@@ -7,7 +7,7 @@ import (
 )
 
 // ResolveException 包装 recover 的返回值
-func ResolveException(v interface{}) contracts.Exception {
+func ResolveException(v any) contracts.Exception {
 	if v == nil {
 		return nil
 	}

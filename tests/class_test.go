@@ -20,6 +20,14 @@ func TestDefine(t *testing.T) {
 	assert.True(t, class.Application.Implements(class.Container))
 }
 
+func Convert[T any](a any) T {
+	return a.(T)
+}
+
+func TestConvert(t *testing.T) {
+	fmt.Println(Convert[string]("a"))
+}
+
 func TestNewByTag(t *testing.T) {
 	user := UserClass1.NewByTag(contracts.Fields{
 		"identify": 2,
@@ -41,7 +49,8 @@ func TestNewByTag(t *testing.T) {
 	fmt.Println(user1)
 }
 
-/**
+/*
+*
 goos: darwin
 goarch: amd64
 pkg: github.com/goal-web/supports/tests
@@ -57,7 +66,8 @@ func BenchmarkNewByTag(b *testing.B) {
 	}
 }
 
-/**
+/*
+*
 goos: darwin
 goarch: amd64
 pkg: github.com/goal-web/supports/tests

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type InstanceGetter func(key string) interface{}
+type InstanceGetter func(key string) any
 
 type BaseFields struct { // 具体方法
 	contracts.FieldsProvider // 抽象方法，继承 interface
@@ -14,7 +14,7 @@ type BaseFields struct { // 具体方法
 	Getter InstanceGetter // 如果有设置 getter ，优先使用 getter
 }
 
-func (this *BaseFields) get(key string) interface{} {
+func (this *BaseFields) get(key string) any {
 	if this.Getter != nil {
 		if value := this.Getter(key); value != nil && value != "" {
 			return value
