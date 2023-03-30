@@ -17,6 +17,49 @@ type Class struct {
 	fields sync.Map
 }
 
+func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
+	kind := t.Kind()
+	var maybeCanJsonify bool
+	switch kind {
+	case reflect.Struct, reflect.Array, reflect.Map, reflect.Slice:
+		maybeCanJsonify = true
+	case reflect.Ptr:
+		switch t.Elem().Kind() {
+		case reflect.Struct, reflect.Array, reflect.Map, reflect.Slice:
+			maybeCanJsonify = true
+		}
+	}
+	var isPtr = kind == reflect.Ptr
+	if maybeCanJsonify {
+		var valueBytes []byte
+		switch v := value.(type) {
+		case []byte:
+			valueBytes = v
+		case string:
+			valueBytes = []byte(v)
+		case fmt.Stringer:
+			valueBytes = []byte(v.String())
+		}
+
+		if len(valueBytes) > 0 {
+			if isPtr {
+				fieldValue := reflect.New(t.Elem()).Interface()
+				err := json.Unmarshal(valueBytes, &fieldValue)
+				if err == nil {
+					return fieldValue, isPtr
+				}
+			} else {
+				fieldValue := reflect.New(t).Interface()
+				err := json.Unmarshal(valueBytes, &fieldValue)
+				if err == nil {
+					return fieldValue, isPtr
+				}
+			}
+		}
+	}
+	return nil, isPtr
+}
+
 func (class *Class) NewByTag(data contracts.Fields, tag string) interface{} {
 	object := reflect.New(class.Type).Elem()
 
@@ -26,31 +69,13 @@ func (class *Class) NewByTag(data contracts.Fields, tag string) interface{} {
 		for key, value := range data {
 			field, ok := jsonFields[key]
 			fieldExported := field.IsExported()
-			if ok && fieldExported && (field.Type.Kind() == reflect.Struct || (field.Type.Kind() == reflect.Ptr && field.Type.Elem().Kind() == reflect.Struct)) {
-				var valueBytes []byte
-				switch v := value.(type) {
-				case []byte:
-					valueBytes = v
-				case string:
-					valueBytes = []byte(v)
-				case fmt.Stringer:
-					valueBytes = []byte(v.String())
-				default:
-					valueBytes = []byte(utils.ConvertToString(v, ""))
-				}
-				var fieldValue interface{}
-				var isStruct = field.Type.Kind() == reflect.Struct
-				if isStruct {
-					fieldValue = reflect.New(field.Type).Interface()
-				} else {
-					fieldValue = reflect.New(field.Type.Elem()).Interface()
-				}
-				err := json.Unmarshal(valueBytes, &fieldValue)
-				if err == nil {
-					if isStruct {
-						object.FieldByIndex(field.Index).Set(reflect.ValueOf(fieldValue).Elem())
+			if ok && fieldExported {
+				jsonValue, isPtr := tryToParseByJson(field.Type, value)
+				if jsonValue != nil {
+					if isPtr {
+						object.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue))
 					} else {
-						object.FieldByIndex(field.Index).Set(reflect.ValueOf(fieldValue))
+						object.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue).Elem())
 					}
 					continue
 				}
