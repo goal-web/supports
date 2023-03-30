@@ -1,7 +1,9 @@
 package class
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/utils"
 	"reflect"
@@ -15,14 +17,46 @@ type Class struct {
 	fields sync.Map
 }
 
-func (c *Class) NewByTag(data contracts.Fields, tag string) any {
-	object := reflect.New(c.Type).Elem()
+func (class *Class) NewByTag(data contracts.Fields, tag string) any {
+	object := reflect.New(class.Type).Elem()
 
 	if data != nil {
-		jsonFields := c.getFields("json")
-		targetFields := c.getFields(tag)
+		jsonFields := class.getFields("json")
+		targetFields := class.getFields(tag)
 		for key, value := range data {
-			if field, ok := targetFields[key]; ok && field.IsExported() {
+			field, ok := jsonFields[key]
+			fieldExported := field.IsExported()
+			if ok && fieldExported && (field.Type.Kind() == reflect.Struct || (field.Type.Kind() == reflect.Ptr && field.Type.Elem().Kind() == reflect.Struct)) {
+				var valueBytes []byte
+				switch v := value.(type) {
+				case []byte:
+					valueBytes = v
+				case string:
+					valueBytes = []byte(v)
+				case fmt.Stringer:
+					valueBytes = []byte(v.String())
+				default:
+					valueBytes = []byte(utils.ConvertToString(v, ""))
+				}
+				var fieldValue any
+				var isStruct = field.Type.Kind() == reflect.Struct
+				if isStruct {
+					fieldValue = reflect.New(field.Type).Interface()
+				} else {
+					fieldValue = reflect.New(field.Type.Elem()).Interface()
+				}
+				err := json.Unmarshal(valueBytes, &fieldValue)
+				if err == nil {
+					if isStruct {
+						object.FieldByIndex(field.Index).Set(reflect.ValueOf(fieldValue).Elem())
+					} else {
+						object.FieldByIndex(field.Index).Set(reflect.ValueOf(fieldValue))
+					}
+					continue
+				}
+			}
+
+			if field, ok = targetFields[key]; ok && field.IsExported() {
 				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
 			} else if field, ok = jsonFields[key]; ok && field.IsExported() {
 				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
@@ -46,17 +80,17 @@ func Make(arg any) contracts.Class {
 	return class
 }
 
-func (c *Class) New(data contracts.Fields) any {
-	return c.NewByTag(data, "json")
+func (class *Class) New(data contracts.Fields) any {
+	return class.NewByTag(data, "json")
 }
 
-func (c *Class) getFields(tag string) map[string]reflect.StructField {
-	data, exists := c.fields.Load(tag)
+func (class *Class) getFields(tag string) map[string]reflect.StructField {
+	data, exists := class.fields.Load(tag)
 
 	if !exists {
 		var fields = map[string]reflect.StructField{}
-		for i := 0; i < c.Type.NumField(); i++ {
-			field := c.Type.Field(i)
+		for i := 0; i < class.Type.NumField(); i++ {
+			field := class.Type.Field(i)
 			tags := utils.ParseStructTag(field.Tag)
 			if target := tags[tag]; target != nil && len(target) > 0 {
 				fields[target[0]] = field
@@ -65,36 +99,36 @@ func (c *Class) getFields(tag string) map[string]reflect.StructField {
 			}
 		}
 
-		c.fields.Store(tag, fields)
+		class.fields.Store(tag, fields)
 		return fields
 	}
 
 	return data.(map[string]reflect.StructField)
 }
 
-func (c *Class) ClassName() string {
-	return utils.GetTypeKey(c)
+func (class *Class) ClassName() string {
+	return utils.GetTypeKey(class)
 }
 
-func (c *Class) GetType() reflect.Type {
-	return c.Type
+func (class *Class) GetType() reflect.Type {
+	return class.Type
 }
 
-func (c *Class) IsSubClass(class any) bool {
-	if value, ok := class.(reflect.Type); ok {
-		return value.ConvertibleTo(c.Type)
+func (class *Class) IsSubClass(subclass any) bool {
+	if value, ok := subclass.(reflect.Type); ok {
+		return value.ConvertibleTo(class.Type)
 	}
 
-	return reflect.TypeOf(class).ConvertibleTo(c.Type)
+	return reflect.TypeOf(subclass).ConvertibleTo(class.Type)
 }
 
-func (c *Class) Implements(class reflect.Type) bool {
-	switch value := class.(type) {
+func (class *Class) Implements(classType reflect.Type) bool {
+	switch value := classType.(type) {
 	case *Interface:
-		return c.Type.Implements(value.Type)
+		return class.Type.Implements(value.Type)
 	case *Class:
-		return c.Type.Implements(value.Type)
+		return class.Type.Implements(value.Type)
 	}
 
-	return c.Type.Implements(class)
+	return class.Type.Implements(classType)
 }

@@ -9,8 +9,14 @@ import (
 )
 
 type User struct {
-	Id   int `json:"id" db:"identify"`
-	name string
+	Id          int `json:"id" db:"identify"`
+	name        string
+	Setting     Setting  `json:"setting"`
+	SettingStar *Setting `json:"setting_star"`
+}
+
+type Setting struct {
+	Option string `json:"option"`
 }
 
 var UserClass1 = class.Make(new(User))
@@ -30,12 +36,16 @@ func TestConvert(t *testing.T) {
 
 func TestNewByTag(t *testing.T) {
 	user := UserClass1.NewByTag(contracts.Fields{
-		"identify": 2,
-		"name":     "goal", // 为导出字段不支持解析
+		"identify":     2,
+		"name":         "goal", // 为导出字段不支持解析
+		"setting":      `{"option": "setting"}`,
+		"setting_star": `{"option": "setting_star"}`,
 	}, "db").(User)
 
 	fmt.Println("user.Id", user)
 	assert.True(t, user.Id == 2 && user.name == "")
+	assert.True(t, user.Setting.Option == "setting")
+	assert.True(t, user.SettingStar.Option == "setting_star")
 
 	user = UserClass1.NewByTag(contracts.Fields{
 		"id": 1, // 没有 db 字段没定义，默认就用 json 字段
