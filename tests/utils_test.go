@@ -70,8 +70,8 @@ func TestJoins(t *testing.T) {
 }
 
 func TestConverts(t *testing.T) {
-	fmt.Println(utils.ConvertToString(true, "false"))
-	fmt.Println(utils.ConvertToString(struct {
+	fmt.Println(utils.ToString(true, "false"))
+	fmt.Println(utils.ToString(struct {
 	}{}, "tests"))
 }
 

@@ -38,13 +38,13 @@ func IsEqual(comparable any, arg any) bool {
 
 	switch comparableType.Kind() {
 	case reflect.Bool:
-		return comparable.(bool) == ConvertToBool(arg, !comparable.(bool)) // 若不能转换成bool，则默认不相等
+		return comparable.(bool) == ToBool(arg, !comparable.(bool)) // 若不能转换成bool，则默认不相等
 	case reflect.String:
-		return comparable.(string) == ConvertToString(arg, fmt.Sprintf("%v", arg))
+		return comparable.(string) == ToString(arg, fmt.Sprintf("%v", arg))
 	case reflect.Int64, reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32,
 		reflect.Uint, reflect.Uint64, reflect.Uint8, reflect.Uint16, reflect.Uint32,
 		reflect.Float64, reflect.Float32:
-		return ConvertToFloat64(comparable, 0) == ConvertToFloat64(arg, 0)
+		return ToFloat64(comparable, 0) == ToFloat64(arg, 0)
 	// 判断结构体是否相等
 	case reflect.Struct:
 		// 不是同一种结构体
@@ -113,22 +113,22 @@ func IsNotIn(comparable any, arg any) (result bool) {
 
 // IsLt 小于 <
 func IsLt(comparable any, arg any) bool {
-	return ConvertToFloat64(comparable, 0) < ConvertToFloat64(arg, 0)
+	return ToFloat64(comparable, 0) < ToFloat64(arg, 0)
 }
 
 // IsLte 小于等于 <=
 func IsLte(comparable any, arg any) bool {
-	return ConvertToFloat64(comparable, 0) <= ConvertToFloat64(arg, 0)
+	return ToFloat64(comparable, 0) <= ToFloat64(arg, 0)
 }
 
 // IsGt 大于 >
 func IsGt(comparable any, arg any) bool {
-	return ConvertToFloat64(comparable, 0) > ConvertToFloat64(arg, 0)
+	return ToFloat64(comparable, 0) > ToFloat64(arg, 0)
 }
 
 // IsGte 大于等于
 func IsGte(comparable any, arg any) bool {
-	return ConvertToFloat64(comparable, 0) >= ConvertToFloat64(arg, 0)
+	return ToFloat64(comparable, 0) >= ToFloat64(arg, 0)
 }
 
 // IsArray 是否是数组或者 slice

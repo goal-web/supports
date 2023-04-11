@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ResolveException 包装 recover 的返回值
-func ResolveException(v any) contracts.Exception {
+// WrapException 包装 recover 的返回值
+func WrapException(v any) contracts.Exception {
 	if v == nil {
 		return nil
 	}
@@ -17,6 +17,8 @@ func ResolveException(v any) contracts.Exception {
 		return e
 	case string:
 		return WithError(errors.New(e))
+	case error:
+		return WithError(e)
 	case contracts.Fields:
 		if e["error"] != nil {
 			return WithError(fmt.Errorf("%v", e["error"]))

@@ -10,11 +10,12 @@ import (
 	"sync"
 )
 
-type Class struct {
+type Class[T any] struct {
 	reflect.Type
 
 	// map[tag名]map[字段名]字段类型
-	fields sync.Map
+	tagFields sync.Map
+	fields    map[string]reflect.StructField
 }
 
 func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
@@ -60,16 +61,21 @@ func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
 	return nil, isPtr
 }
 
-func (class *Class) NewByTag(data contracts.Fields, tag string) any {
+func (class *Class[T]) NewByTag(data contracts.Fields, tag string) T {
 	object := reflect.New(class.Type).Elem()
 
 	if data != nil {
 		jsonFields := class.getFields("json")
 		targetFields := class.getFields(tag)
 		for key, value := range data {
-			field, ok := jsonFields[key]
-			fieldExported := field.IsExported()
-			if ok && fieldExported {
+			field, ok := targetFields[key]
+			if !ok {
+				field, ok = jsonFields[key]
+				if !ok {
+					field, ok = class.fields[key]
+				}
+			}
+			if ok && field.IsExported() {
 				jsonValue, isPtr := tryToParseByJson(field.Type, value)
 				if jsonValue != nil {
 					if isPtr {
@@ -78,39 +84,57 @@ func (class *Class) NewByTag(data contracts.Fields, tag string) any {
 						object.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue).Elem())
 					}
 					continue
+				} else {
+					object.FieldByIndex(field.Index).Set(utils.ToValue(field.Type, value))
 				}
-			}
-
-			if field, ok = targetFields[key]; ok && field.IsExported() {
-				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
-			} else if field, ok = jsonFields[key]; ok && field.IsExported() {
-				object.FieldByIndex(field.Index).Set(utils.ConvertToValue(field.Type, value))
 			}
 		}
 	}
 
-	return object.Interface()
+	return object.Interface().(T)
 }
 
 // Make 创建一个类
-func Make(arg any) contracts.Class {
+func Make[T any](args ...T) contracts.Class[T] {
+	var arg T
+	if len(args) > 0 {
+		arg = args[0]
+	}
+	argType := reflect.TypeOf(arg)
+	if argType == nil {
+		return nil
+	}
+	if argType.Kind() == reflect.Ptr {
+		argType = argType.Elem()
+	}
+	class := &Class[T]{Type: argType}
+	if argType.Kind() != reflect.Struct {
+		panic(TypeException{Err: errors.New("只支持 struct 类型")})
+	}
+	class.initFields()
+	return class
+}
+
+// Any 创建一个类
+func Any(arg any) contracts.Class[any] {
 	argType := reflect.TypeOf(arg)
 	if argType.Kind() == reflect.Ptr {
 		argType = argType.Elem()
 	}
-	class := &Class{Type: argType}
+	class := &Class[any]{Type: argType}
 	if argType.Kind() != reflect.Struct {
 		panic(TypeException{Err: errors.New("只支持 struct 类型")})
 	}
+	class.initFields()
 	return class
 }
 
-func (class *Class) New(data contracts.Fields) any {
+func (class *Class[T]) New(data contracts.Fields) T {
 	return class.NewByTag(data, "json")
 }
 
-func (class *Class) getFields(tag string) map[string]reflect.StructField {
-	data, exists := class.fields.Load(tag)
+func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
+	data, exists := class.tagFields.Load(tag)
 
 	if !exists {
 		var fields = map[string]reflect.StructField{}
@@ -124,22 +148,31 @@ func (class *Class) getFields(tag string) map[string]reflect.StructField {
 			}
 		}
 
-		class.fields.Store(tag, fields)
+		class.tagFields.Store(tag, fields)
 		return fields
 	}
 
 	return data.(map[string]reflect.StructField)
 }
 
-func (class *Class) ClassName() string {
+func (class *Class[T]) initFields() {
+	var fields = map[string]reflect.StructField{}
+	for i := 0; i < class.Type.NumField(); i++ {
+		field := class.Type.Field(i)
+		fields[field.Name] = field
+	}
+	class.fields = fields
+}
+
+func (class *Class[T]) ClassName() string {
 	return utils.GetTypeKey(class)
 }
 
-func (class *Class) GetType() reflect.Type {
+func (class *Class[T]) GetType() reflect.Type {
 	return class.Type
 }
 
-func (class *Class) IsSubClass(subclass any) bool {
+func (class *Class[T]) IsSubClass(subclass any) bool {
 	if value, ok := subclass.(reflect.Type); ok {
 		return value.ConvertibleTo(class.Type)
 	}
@@ -147,11 +180,11 @@ func (class *Class) IsSubClass(subclass any) bool {
 	return reflect.TypeOf(subclass).ConvertibleTo(class.Type)
 }
 
-func (class *Class) Implements(classType reflect.Type) bool {
+func (class *Class[T]) Implements(classType reflect.Type) bool {
 	switch value := classType.(type) {
 	case *Interface:
 		return class.Type.Implements(value.Type)
-	case *Class:
+	case *Class[T]:
 		return class.Type.Implements(value.Type)
 	}
 

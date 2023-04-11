@@ -12,11 +12,11 @@ type UserClass struct {
 }
 
 func TestClass(t *testing.T) {
-	class := class.Make(UserClass{})
+	class := class.Make[UserClass]()
 
 	userInstance := class.New(map[string]any{
 		"name": "goal",
-	}).(UserClass)
+	})
 
 	fmt.Println(userInstance)
 

@@ -27,8 +27,6 @@ var (
 	Event    = Define(new(contracts.Event))
 	Listener = Define(new(contracts.EventListener))
 
-	DB           = Define(new(contracts.DBConnection))
-	SqlExecutor  = Define(new(contracts.SqlExecutor))
-	QueryBuilder = Define(new(contracts.QueryBuilder))
-	Model        = Define(new(contracts.Model))
+	DB          = Define(new(contracts.DBConnection))
+	SqlExecutor = Define(new(contracts.SqlExecutor))
 )

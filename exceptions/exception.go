@@ -7,6 +7,9 @@ import (
 )
 
 func WithError(err error) contracts.Exception {
+	if err == nil {
+		return nil
+	}
 	if e, isException := err.(contracts.Exception); isException {
 		return e
 	}
@@ -14,6 +17,9 @@ func WithError(err error) contracts.Exception {
 }
 
 func WithRecover(err any) contracts.Exception {
+	if err == nil {
+		return nil
+	}
 	switch e := err.(type) {
 	case contracts.Exception:
 		return e
@@ -25,8 +31,11 @@ func WithRecover(err any) contracts.Exception {
 	return New(fmt.Sprintf("%v", err))
 }
 
-func WithPrevious(err error, previous contracts.Exception) Exception {
-	return Exception{err, previous}
+func WithPrevious(err error, previous contracts.Exception) contracts.Exception {
+	if err == nil {
+		return nil
+	}
+	return &Exception{err, previous}
 }
 
 func New(err string) contracts.Exception {
@@ -35,7 +44,7 @@ func New(err string) contracts.Exception {
 
 func Throw(err any) {
 	if err != nil {
-		panic(ResolveException(err))
+		panic(WrapException(err))
 	}
 }
 

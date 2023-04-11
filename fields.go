@@ -3,7 +3,6 @@ package supports
 import (
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/utils"
-	"strings"
 )
 
 type InstanceGetter func(key string) any
@@ -14,20 +13,83 @@ type BaseFields struct { // 具体方法
 	Getter InstanceGetter // 如果有设置 getter ，优先使用 getter
 }
 
-func (this *BaseFields) get(key string) any {
-	if this.Getter != nil {
-		if value := this.Getter(key); value != nil && value != "" {
+func (base *BaseFields) Optional(key string, value any) any {
+	if result := base.get(key); result != nil {
+		return result
+	}
+	return value
+}
+
+func (base *BaseFields) Int16Optional(key string, defaultValue int16) int16 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToInt16(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) Int32Optional(key string, defaultValue int32) int32 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToInt32(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) Int8Optional(key string, defaultValue int8) int8 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToInt8(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) UInt64Optional(key string, defaultValue uint64) uint64 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToUInt64(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) UInt32Optional(key string, defaultValue uint32) uint32 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToUInt32(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) UInt16Optional(key string, defaultValue uint16) uint16 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToUInt16(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) UInt8Optional(key string, defaultValue uint8) uint8 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToUInt8(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) UIntOptional(key string, defaultValue uint) uint {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToUInt(value, defaultValue)
+	}
+	return defaultValue
+}
+
+func (base *BaseFields) get(key string) any {
+	if base.Getter != nil {
+		if value := base.Getter(key); value != nil && value != "" {
 			return value
 		}
 	}
-	return this.Fields()[key]
+	return base.Fields()[key]
 }
 
-func (this *BaseFields) Only(keys ...string) contracts.Fields {
+func (base *BaseFields) Only(keys ...string) contracts.Fields {
 	var fields = make(contracts.Fields)
 
 	for _, key := range keys {
-		if value := this.get(key); value != nil {
+		if value := base.get(key); value != nil {
 			fields[key] = value
 		}
 	}
@@ -35,13 +97,13 @@ func (this *BaseFields) Only(keys ...string) contracts.Fields {
 	return fields
 }
 
-func (this *BaseFields) ExceptFields(keys ...string) contracts.Fields {
+func (base *BaseFields) ExceptFields(keys ...string) contracts.Fields {
 	var (
 		results = make(contracts.Fields)
 		keysMap = utils.MakeKeysMap(keys...)
 	)
 
-	for key, value := range this.Fields() {
+	for key, value := range base.Fields() {
 		if _, exists := keysMap[key]; !exists {
 			results[key] = value
 		}
@@ -50,11 +112,11 @@ func (this *BaseFields) ExceptFields(keys ...string) contracts.Fields {
 	return results
 }
 
-func (this *BaseFields) OnlyExists(keys ...string) contracts.Fields {
+func (base *BaseFields) OnlyExists(keys ...string) contracts.Fields {
 	var fields = make(contracts.Fields)
 
 	for _, key := range keys {
-		if value := this.get(key); value != nil {
+		if value := base.get(key); value != nil {
 			fields[key] = value
 		}
 	}
@@ -62,90 +124,104 @@ func (this *BaseFields) OnlyExists(keys ...string) contracts.Fields {
 	return fields
 }
 
-func (this *BaseFields) StringOption(key string, defaultValue string) string {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToString(value, defaultValue)
+func (base *BaseFields) StringOptional(key string, defaultValue string) string {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToString(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) Int64Option(key string, defaultValue int64) int64 {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToInt64(value, defaultValue)
+func (base *BaseFields) Int64Optional(key string, defaultValue int64) int64 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToInt64(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) IntOption(key string, defaultValue int) int {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToInt(value, defaultValue)
+func (base *BaseFields) IntOptional(key string, defaultValue int) int {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToInt(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) Float64Option(key string, defaultValue float64) float64 {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToFloat64(value, defaultValue)
+func (base *BaseFields) Float64Optional(key string, defaultValue float64) float64 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToFloat64(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) FloatOption(key string, defaultValue float32) float32 {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToFloat(value, defaultValue)
+func (base *BaseFields) FloatOptional(key string, defaultValue float32) float32 {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToFloat(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) BoolOption(key string, defaultValue bool) bool {
-	if value := this.get(key); value != nil && value != "" {
-		return utils.ConvertToBool(value, defaultValue)
+func (base *BaseFields) BoolOptional(key string, defaultValue bool) bool {
+	if value := base.get(key); value != nil && value != "" {
+		return utils.ToBool(value, defaultValue)
 	}
 	return defaultValue
 }
 
-func (this *BaseFields) FieldsOption(key string, defaultValue contracts.Fields) contracts.Fields {
-	if value := this.get(key); value != nil && value != "" {
-		if fields, err := utils.ConvertToFields(value); err == nil {
-			return fields
-		}
-	}
-	fields := contracts.Fields{}
-	for fieldKey, value := range this.Fields() {
-		if strings.HasPrefix(fieldKey, key+".") {
-			fields[strings.ReplaceAll(fieldKey, key+".", "")] = value
-		}
-	}
-	if len(fields) > 0 {
-		return fields
-	}
-	return defaultValue
+func (base *BaseFields) GetString(key string) string {
+	return base.StringOptional(key, "")
 }
 
-func (this *BaseFields) GetString(key string) string {
-	return this.StringOption(key, "")
+func (base *BaseFields) GetInt64(key string) int64 {
+	return base.Int64Optional(key, 0)
 }
 
-func (this *BaseFields) GetInt64(key string) int64 {
-	return this.Int64Option(key, 0)
+func (base *BaseFields) GetInt(key string) int {
+	return base.IntOptional(key, 0)
 }
 
-func (this *BaseFields) GetInt(key string) int {
-	return this.IntOption(key, 0)
+func (base *BaseFields) GetFloat64(key string) float64 {
+	return base.Float64Optional(key, 0)
 }
 
-func (this *BaseFields) GetFloat64(key string) float64 {
-	return this.Float64Option(key, 0)
+func (base *BaseFields) GetFloat(key string) float32 {
+	return base.FloatOptional(key, 0)
 }
 
-func (this *BaseFields) GetFloat(key string) float32 {
-	return this.FloatOption(key, 0)
+func (base *BaseFields) GetBool(key string) bool {
+	return base.BoolOptional(key, false)
 }
 
-func (this *BaseFields) GetBool(key string) bool {
-	return this.BoolOption(key, false)
+func (base *BaseFields) Get(key string) any {
+	return base.get(key)
 }
 
-func (this *BaseFields) GetFields(key string) contracts.Fields {
-	return this.FieldsOption(key, contracts.Fields{})
+func (base *BaseFields) GetInt32(key string) int32 {
+	return base.Int32Optional(key, 0)
+}
+
+func (base *BaseFields) GetInt16(key string) int16 {
+	return base.Int16Optional(key, 0)
+}
+
+func (base *BaseFields) GetInt8(key string) int8 {
+	return base.Int8Optional(key, 0)
+}
+
+func (base *BaseFields) GetUInt64(key string) uint64 {
+	return base.UInt64Optional(key, 0)
+}
+
+func (base *BaseFields) GetUInt32(key string) uint32 {
+	return base.UInt32Optional(key, 0)
+}
+
+func (base *BaseFields) GetUInt16(key string) uint16 {
+	return base.UInt16Optional(key, 0)
+}
+
+func (base *BaseFields) GetUInt8(key string) uint8 {
+	return base.UInt8Optional(key, 0)
+}
+
+func (base *BaseFields) GetUInt(key string) uint {
+	return base.UIntOptional(key, 0)
 }

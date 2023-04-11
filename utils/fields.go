@@ -110,7 +110,7 @@ func GetInt64Field(fields contracts.Fields, key string, defaultValues ...int64) 
 		if intValue, isInt := value.(int64); isInt {
 			return intValue
 		}
-		return ConvertToInt64(value, defaultValue)
+		return ToInt64(value, defaultValue)
 	} else {
 		return defaultValue
 	}
@@ -126,7 +126,7 @@ func GetIntField(fields contracts.Fields, key string, defaultValues ...int) int 
 		if intValue, isInt := value.(int); isInt {
 			return intValue
 		}
-		return int(ConvertToInt64(value, int64(defaultValue)))
+		return int(ToInt64(value, int64(defaultValue)))
 	} else {
 		return defaultValue
 	}
@@ -142,7 +142,7 @@ func GetFloatField(fields contracts.Fields, key string, defaultValues ...float32
 		if intValue, isInt := value.(float32); isInt {
 			return intValue
 		}
-		return ConvertToFloat(value, defaultValue)
+		return ToFloat(value, defaultValue)
 	} else {
 		return defaultValue
 	}
@@ -158,7 +158,7 @@ func GetFloat64Field(fields contracts.Fields, key string, defaultValues ...float
 		if intValue, isInt := value.(float64); isInt {
 			return intValue
 		}
-		return ConvertToFloat64(value, defaultValue)
+		return ToFloat64(value, defaultValue)
 	} else {
 		return defaultValue
 	}
@@ -171,13 +171,13 @@ func GetBoolField(fields contracts.Fields, key string, defaultValues ...bool) bo
 		defaultValue = defaultValues[0]
 	}
 	if fieldValue, existsValue := fields[key]; existsValue {
-		return ConvertToBool(fieldValue, defaultValue)
+		return ToBool(fieldValue, defaultValue)
 	}
 	return defaultValue
 }
 
-// ConvertToFields 尝试把一个变量转换成 Fields 类型
-func ConvertToFields(anyValue any) (contracts.Fields, error) {
+// ToFields 尝试把一个变量转换成 Fields 类型
+func ToFields(anyValue any) (contracts.Fields, error) {
 	fields := contracts.Fields{}
 	switch paramValue := anyValue.(type) {
 	case contracts.Fields:

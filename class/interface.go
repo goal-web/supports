@@ -47,8 +47,6 @@ func (i *Interface) Implements(class reflect.Type) bool {
 	switch value := class.(type) {
 	case *Interface:
 		return i.Type.Implements(value.Type)
-	case *Class:
-		return false
 	}
 
 	return i.Type.Implements(class)

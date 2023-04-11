@@ -40,8 +40,8 @@ func IsSameStruct(v1, v2 any) bool {
 	return f1.PkgPath() == f2.PkgPath() && f1.Name() == f2.Name()
 }
 
-// ConvertToTypes 把变量转换成反射类型
-func ConvertToTypes(args ...any) []reflect.Type {
+// ToTypes 把变量转换成反射类型
+func ToTypes(args ...any) []reflect.Type {
 	types := make([]reflect.Type, 0)
 	for _, arg := range args {
 		types = append(types, reflect.TypeOf(arg))
@@ -99,7 +99,7 @@ func GetTypeKey(p reflect.Type) string {
 func NotNil(args ...any) any {
 	for _, arg := range args {
 		switch argValue := arg.(type) {
-		case contracts.InstanceProvider:
+		case contracts.InstanceProvider[any]:
 			arg = argValue()
 		case func() any:
 			arg = argValue()
@@ -125,21 +125,21 @@ func ParseStructTag(rawTag reflect.StructTag) map[string][]string {
 	return results
 }
 
-// ConvertToValue 把 interface 转换成指定类型的 reflect.Value
-func ConvertToValue(argType reflect.Type, arg any) reflect.Value {
+// ToValue 把 interface 转换成指定类型的 reflect.Value
+func ToValue(argType reflect.Type, arg any) reflect.Value {
 	switch argType.Kind() {
 	case reflect.String:
-		return reflect.ValueOf(ConvertToString(arg, ""))
+		return reflect.ValueOf(ToString(arg, ""))
 	case reflect.Int:
-		return reflect.ValueOf(ConvertToInt(arg, 0))
+		return reflect.ValueOf(ToInt(arg, 0))
 	case reflect.Int64:
-		return reflect.ValueOf(ConvertToInt64(arg, 0))
+		return reflect.ValueOf(ToInt64(arg, 0))
 	case reflect.Float64:
-		return reflect.ValueOf(ConvertToFloat64(arg, 0))
+		return reflect.ValueOf(ToFloat64(arg, 0))
 	case reflect.Float32:
-		return reflect.ValueOf(ConvertToFloat(arg, 0))
+		return reflect.ValueOf(ToFloat(arg, 0))
 	case reflect.Bool:
-		return reflect.ValueOf(ConvertToBool(arg, false))
+		return reflect.ValueOf(ToBool(arg, false))
 	}
 	if reflect.TypeOf(arg).ConvertibleTo(argType) {
 		return reflect.ValueOf(arg).Convert(argType)

@@ -23,7 +23,7 @@ type Setting struct {
 	Option string `json:"option"`
 }
 
-var UserClass1 = class.Make(new(User))
+var UserClass1 = class.Make[User]()
 
 func TestDefine(t *testing.T) {
 	assert.True(t, class.Container.IsSubClass(class.Application))
@@ -48,7 +48,7 @@ func TestNewByTag(t *testing.T) {
 		"map_settings_star": `{"first": {"option": "map_settings_star"}}`,
 		"settings":          `[{"option": "settings"}]`,
 		"settings_star":     `[{"option": "settings_star"}]`,
-	}, "db").(User)
+	}, "db")
 
 	fmt.Println("user.Id", user)
 	assert.True(t, user.Id == 2 && user.name == "")
@@ -61,12 +61,12 @@ func TestNewByTag(t *testing.T) {
 
 	user = UserClass1.NewByTag(contracts.Fields{
 		"id": 1, // 没有 db 字段没定义，默认就用 json 字段
-	}, "db").(User)
+	}, "db")
 	assert.True(t, user.Id == 1)
 
 	var user1 = UserClass1.NewByTag(contracts.Fields{
 		"id": []byte("1"), // 没有 db 字段没定义，默认就用 json 字段
-	}, "db").(User)
+	}, "db")
 	assert.True(t, user1.Id == 1)
 	fmt.Println(user1)
 }
@@ -101,7 +101,7 @@ func BenchmarkComplexNewByTag(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		user := UserClass1.NewByTag(contracts.Fields{
 			"identify": i,
-		}, "db").(User)
+		}, "db")
 		user.Id++
 	}
 }
