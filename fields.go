@@ -5,12 +5,12 @@ import (
 	"github.com/goal-web/supports/utils"
 )
 
-type InstanceGetter func(key string) any
+type InstanceGetter func(key string, defaultValue any) any
 
 type BaseFields struct { // 具体方法
 	contracts.FieldsProvider // 抽象方法，继承 interface
 
-	Getter InstanceGetter // 如果有设置 getter ，优先使用 getter
+	OptionalGetter InstanceGetter // 如果有设置 getter ，优先使用 getter
 }
 
 func (base *BaseFields) Optional(key string, value any) any {
@@ -21,64 +21,64 @@ func (base *BaseFields) Optional(key string, value any) any {
 }
 
 func (base *BaseFields) Int16Optional(key string, defaultValue int16) int16 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToInt16(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) Int32Optional(key string, defaultValue int32) int32 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToInt32(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) Int8Optional(key string, defaultValue int8) int8 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToInt8(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) UInt64Optional(key string, defaultValue uint64) uint64 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToUInt64(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) UInt32Optional(key string, defaultValue uint32) uint32 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToUInt32(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) UInt16Optional(key string, defaultValue uint16) uint16 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToUInt16(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) UInt8Optional(key string, defaultValue uint8) uint8 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToUInt8(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) UIntOptional(key string, defaultValue uint) uint {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToUInt(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) get(key string) any {
-	if base.Getter != nil {
-		if value := base.Getter(key); value != nil && value != "" {
+	if base.OptionalGetter != nil {
+		if value := base.OptionalGetter(key, nil); value != nil {
 			return value
 		}
 	}
@@ -125,42 +125,42 @@ func (base *BaseFields) OnlyExists(keys ...string) contracts.Fields {
 }
 
 func (base *BaseFields) StringOptional(key string, defaultValue string) string {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToString(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) Int64Optional(key string, defaultValue int64) int64 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToInt64(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) IntOptional(key string, defaultValue int) int {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToInt(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) Float64Optional(key string, defaultValue float64) float64 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToFloat64(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) FloatOptional(key string, defaultValue float32) float32 {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToFloat(value, defaultValue)
 	}
 	return defaultValue
 }
 
 func (base *BaseFields) BoolOptional(key string, defaultValue bool) bool {
-	if value := base.get(key); value != nil && value != "" {
+	if value := base.get(key); value != nil {
 		return utils.ToBool(value, defaultValue)
 	}
 	return defaultValue
