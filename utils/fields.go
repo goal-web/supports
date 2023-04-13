@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"github.com/goal-web/contracts"
 	"reflect"
 	"strings"
@@ -185,6 +186,10 @@ func ToFields(anyValue any) (contracts.Fields, error) {
 	case map[string]any:
 		for key, value := range paramValue {
 			fields[key] = value
+		}
+	case map[any]any:
+		for key, value := range paramValue {
+			fields[fmt.Sprintf("%v", key)] = value
 		}
 	case map[string]int:
 		for key, value := range paramValue {

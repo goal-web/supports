@@ -5,9 +5,7 @@ import (
 	"github.com/goal-web/contracts"
 )
 
-var (
-	Debug = false
-)
+var Debug = false
 
 type ApexLogger struct {
 	Entry *log.Entry
