@@ -75,7 +75,7 @@ func (class *Class[T]) NewByTag(data contracts.Fields, tag string) T {
 					field, ok = class.fields[key]
 				}
 			}
-			if ok && field.IsExported() {
+			if ok && field.IsExported() && value != nil {
 				jsonValue, isPtr := tryToParseByJson(field.Type, value)
 				if jsonValue != nil {
 					if isPtr {

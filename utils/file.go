@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+func ExistsPath(path string) bool {
+	_, err := os.Stat(path)
+	return os.IsExist(err)
+}
+
 // CopyFile 复制一个文件
 func CopyFile(from, to string, bufferSize int64) error {
 	sourceFileStat, statRrr := os.Stat(from)

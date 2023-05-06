@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 	"github.com/goal-web/contracts"
 )
@@ -27,6 +26,7 @@ func Base(signature, description string) Command {
 }
 
 func (cmd *Command) InjectArguments(arguments contracts.CommandArguments) error {
+	cmd.CommandArguments = arguments
 	argIndex := 0
 	for _, arg := range cmd.args {
 		switch arg.Type {
@@ -34,9 +34,9 @@ func (cmd *Command) InjectArguments(arguments contracts.CommandArguments) error 
 			argValue := arguments.GetArg(argIndex)
 			if argValue == "" {
 				if cmd.Exists(arg.Name) {
-					arguments.SetOption(arg.Name, arguments.Fields()[arg.Name])
+					arguments.SetOption(arg.Name, arguments.Get(arg.Name))
 				} else {
-					return errors.New(fmt.Sprintf("Missing required parameter：%s - %s", arg.Name, arg.Description))
+					return fmt.Errorf("missing required parameter：%s - %s", arg.Name, arg.Description)
 				}
 			} else {
 				arguments.SetOption(arg.Name, argValue)

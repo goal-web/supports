@@ -2,13 +2,13 @@ package utils
 
 import (
 	"github.com/goal-web/contracts"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
 // LoadEnv 加载 .env 文件
 func LoadEnv(envPath, sep string) (contracts.Fields, error) {
-	envBytes, err := ioutil.ReadFile(envPath)
+	envBytes, err := os.ReadFile(envPath)
 	if err != nil {
 		return nil, err
 	}
