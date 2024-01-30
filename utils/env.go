@@ -13,8 +13,11 @@ func LoadEnv(envPath, sep string) (contracts.Fields, error) {
 		return nil, err
 	}
 
+	// 将 \r\n 替换为 \n 以兼容 Windows 系统
+	envContent := strings.ReplaceAll(string(envBytes), "\r\n", "\n")
+
 	fields := make(contracts.Fields)
-	for _, line := range strings.Split(string(envBytes), "\n") {
+	for _, line := range strings.Split(envContent, "\n") {
 		if strings.HasPrefix(line, "#") { // 跳过注释
 			continue
 		}
