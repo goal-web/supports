@@ -40,6 +40,8 @@ func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
 			valueBytes = []byte(v)
 		case fmt.Stringer:
 			valueBytes = []byte(v.String())
+		default:
+			valueBytes, _ = json.Marshal(v)
 		}
 
 		if len(valueBytes) > 0 {
