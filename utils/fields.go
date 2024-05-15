@@ -249,8 +249,17 @@ func ToFields(anyValue any) (contracts.Fields, error) {
 		}
 	default:
 		paramType := reflect.ValueOf(anyValue)
-
 		switch paramType.Kind() {
+		case reflect.Ptr: // 结构体指针
+			if paramType.Elem().Kind() == reflect.Struct {
+				EachStructField(paramType.Elem(), paramType.Elem().Interface(), func(field reflect.StructField, value reflect.Value) {
+					if field.IsExported() {
+						fields[SnakeString(field.Name)] = value.Interface()
+					} else {
+						fields[SnakeString(field.Name)] = nil
+					}
+				})
+			}
 		case reflect.Struct: // 结构体
 			EachStructField(paramType, anyValue, func(field reflect.StructField, value reflect.Value) {
 				if field.IsExported() {
