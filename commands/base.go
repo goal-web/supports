@@ -43,7 +43,7 @@ func (cmd *Command) InjectArguments(arguments contracts.CommandArguments) error 
 			}
 			argIndex++
 		case OptionalArg:
-			argValue := arguments.GetArg(argIndex)
+			argValue := arguments.Optional(arg.Name, arg.Default)
 			if argValue == "" {
 				arguments.SetOption(arg.Name, arg.Default)
 			} else {
