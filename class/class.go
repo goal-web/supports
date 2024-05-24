@@ -153,7 +153,7 @@ func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
 		for i := 0; i < class.Type.NumField(); i++ {
 			field := class.Type.Field(i)
 			tags := utils.ParseStructTag(field.Tag)
-			if target := tags[tag]; target != nil && len(target) > 0 {
+			if target := tags[tag]; len(target) > 0 {
 				fields[target[0]] = field
 			} else {
 				fields[field.Name] = field

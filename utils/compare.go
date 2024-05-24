@@ -59,7 +59,7 @@ func IsEqual(comparable any, arg any) bool {
 				isSame = false
 			}
 
-			if isSame && IsEqual(value.Interface(), argValue.FieldByName(field.Name).Interface()) == false {
+			if isSame && !IsEqual(value.Interface(), argValue.FieldByName(field.Name).Interface()) {
 				isSame = false
 			}
 		})
@@ -73,7 +73,7 @@ func IsEqual(comparable any, arg any) bool {
 
 		isSame := true
 		EachSlice(comparableValue, func(index int, value reflect.Value) {
-			if isSame && IsEqual(value.Interface(), argValue.Index(index).Interface()) == false {
+			if isSame && !IsEqual(value.Interface(), argValue.Index(index).Interface()) {
 				isSame = false
 			}
 		})
@@ -90,7 +90,7 @@ func IsIn(comparable any, arg any) (result bool) {
 	}
 
 	EachSlice(argValue, func(index int, value reflect.Value) {
-		if result == false && IsEqual(comparable, value.Interface()) {
+		if !result && IsEqual(comparable, value.Interface()) {
 			result = true
 		}
 	})
@@ -104,7 +104,7 @@ func IsNotIn(comparable any, arg any) (result bool) {
 		return false
 	}
 	EachSlice(argValue, func(index int, value reflect.Value) {
-		if result == false && IsEqual(comparable, value.Interface()) {
+		if !result && IsEqual(comparable, value.Interface()) {
 			result = true
 		}
 	})

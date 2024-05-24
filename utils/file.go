@@ -11,7 +11,7 @@ import (
 
 func ExistsPath(path string) bool {
 	_, err := os.Stat(path)
-	return os.IsExist(err)
+	return err == nil
 }
 
 // CopyFile 复制一个文件
@@ -22,7 +22,7 @@ func CopyFile(from, to string, bufferSize int64) error {
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file.", from)
+		return fmt.Errorf("%s is not a regular file", from)
 	}
 
 	source, openErr := os.Open(from)
@@ -33,7 +33,7 @@ func CopyFile(from, to string, bufferSize int64) error {
 
 	_, statRrr = os.Stat(to)
 	if statRrr == nil {
-		return fmt.Errorf("File %s already exists.", to)
+		return fmt.Errorf("file %s already exists", to)
 	}
 
 	destination, createErr := os.Create(to)

@@ -9,9 +9,6 @@ import (
 
 type Interface struct {
 	reflect.Type
-
-	// map[字段名]字段类型
-	fields map[string]reflect.StructField
 }
 
 func (i *Interface) GetType() reflect.Type {
