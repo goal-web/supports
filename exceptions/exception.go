@@ -54,7 +54,11 @@ type Exception struct {
 }
 
 func (e *Exception) Error() string {
-	return e.Err.Error()
+	msg := e.Err.Error()
+	if e.Previous != nil {
+		msg += "." + e.Previous.Error()
+	}
+	return msg
 }
 
 func (e *Exception) GetPrevious() contracts.Exception {
