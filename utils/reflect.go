@@ -90,6 +90,9 @@ func GetTypeKey(p reflect.Type) string {
 		p = p.Elem()
 	}
 
+	if p.Kind() == reflect.Func {
+	}
+
 	pkgPath := p.PkgPath()
 
 	return IfString(pkgPath == "", "", pkgPath+".") + p.Name()
