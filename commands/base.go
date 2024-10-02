@@ -11,48 +11,49 @@ type Command struct {
 	Description string
 	Name        string
 	Help        string
-	args        []Arg
+	args        []contracts.CommandArg
 }
 
-func Base(signature, description string) Command {
+func Base(signature, description string) *Command {
 	name, args := ParseSignature(signature)
-	return Command{
+	return &Command{
 		Signature:   signature,
 		Description: description,
 		Name:        name,
-		Help:        args.Help(),
+		Help:        Args(args).Help(),
 		args:        args,
 	}
 }
 
-func (cmd *Command) InjectArguments(arguments contracts.CommandArguments) error {
+func (cmd *Command) InjectArguments(defined []contracts.CommandArg, arguments contracts.CommandArguments) error {
+	cmd.args = defined
 	cmd.CommandArguments = arguments
 	argIndex := 0
 	for _, arg := range cmd.args {
-		switch arg.Type {
-		case RequiredArg:
+		switch arg.GetType() {
+		case contracts.CommandRequiredArg:
 			argValue := arguments.GetArg(argIndex)
 			if argValue == "" {
-				if cmd.Exists(arg.Name) {
-					arguments.SetOption(arg.Name, arguments.Get(arg.Name))
+				if cmd.Exists(arg.GetName()) {
+					arguments.SetOption(arg.GetName(), arguments.Get(arg.GetName()))
 				} else {
-					return fmt.Errorf("missing required parameter：%s - %s", arg.Name, arg.Description)
+					return fmt.Errorf("missing required parameter：%s - %s", arg.GetName(), arg.GetDescription())
 				}
 			} else {
-				arguments.SetOption(arg.Name, argValue)
+				arguments.SetOption(arg.GetName(), argValue)
 			}
 			argIndex++
-		case OptionalArg:
-			argValue := arguments.Optional(arg.Name, arg.Default)
+		case contracts.CommandOptionalArg:
+			argValue := arguments.Optional(arg.GetName(), arg.GetDefault())
 			if argValue == "" {
-				arguments.SetOption(arg.Name, arg.Default)
+				arguments.SetOption(arg.GetName(), arg.GetDefault())
 			} else {
-				arguments.SetOption(arg.Name, argValue)
+				arguments.SetOption(arg.GetName(), argValue)
 			}
 			argIndex++
-		case Option:
-			if !arguments.Exists(arg.Name) && arg.Default != nil {
-				arguments.SetOption(arg.Name, arg.Default)
+		case contracts.CommandOption:
+			if !arguments.Exists(arg.GetName()) && arg.GetDefault() != nil {
+				arguments.SetOption(arg.GetName(), arg.GetDefault())
 			}
 		}
 	}
@@ -72,4 +73,7 @@ func (cmd *Command) GetName() string {
 }
 func (cmd *Command) GetHelp() string {
 	return cmd.Help
+}
+func (cmd *Command) GetArgs() []contracts.CommandArg {
+	return cmd.args
 }

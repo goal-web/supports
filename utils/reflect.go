@@ -90,7 +90,8 @@ func GetTypeKey(p reflect.Type) string {
 		p = p.Elem()
 	}
 
-	if p.Kind() == reflect.Func {
+	if p.Kind() == reflect.Slice {
+		return "[]" + p.Elem().String()
 	}
 
 	pkgPath := p.PkgPath()
