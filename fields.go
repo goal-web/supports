@@ -82,7 +82,7 @@ func (base *BaseFields) get(key string) any {
 			return value
 		}
 	}
-	return base.Fields()[key]
+	return base.ToFields()[key]
 }
 
 func (base *BaseFields) Only(keys ...string) contracts.Fields {
@@ -103,7 +103,7 @@ func (base *BaseFields) ExceptFields(keys ...string) contracts.Fields {
 		keysMap = utils.MakeKeysMap(keys...)
 	)
 
-	for key, value := range base.Fields() {
+	for key, value := range base.ToFields() {
 		if _, exists := keysMap[key]; !exists {
 			results[key] = value
 		}
