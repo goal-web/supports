@@ -181,6 +181,8 @@ func GetBoolField(fields contracts.Fields, key string, defaultValues ...bool) bo
 func ToFields(anyValue any) (contracts.Fields, error) {
 	fields := contracts.Fields{}
 	switch paramValue := anyValue.(type) {
+	case contracts.FieldsProvider:
+		fields = paramValue.ToFields()
 	case contracts.Fields:
 		fields = paramValue
 	case map[string]any:
