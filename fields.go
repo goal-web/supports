@@ -8,9 +8,13 @@ import (
 type InstanceGetter func(key string, defaultValue any) any
 
 type BaseFields struct { // 具体方法
-	contracts.FieldsProvider // 抽象方法，继承 interface
+	Provider contracts.FieldsProvider // 抽象方法，继承 interface
 
 	OptionalGetter InstanceGetter // 如果有设置 getter ，优先使用 getter
+}
+
+func (base *BaseFields) ToFields() contracts.Fields {
+	return base.Provider.ToFields()
 }
 
 func (base *BaseFields) Optional(key string, value any) any {
