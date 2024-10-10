@@ -14,6 +14,15 @@ func ExistsPath(path string) bool {
 	return err == nil
 }
 
+// FileExists 文件是否存在
+func FileExists(filePath string) bool {
+	stat, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		return false // 文件不存在
+	}
+	return err == nil && !stat.IsDir() // 文件存在
+}
+
 // CopyFile 复制一个文件
 func CopyFile(from, to string, bufferSize int64) error {
 	sourceFileStat, statRrr := os.Stat(from)
