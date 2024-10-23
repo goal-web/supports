@@ -19,6 +19,18 @@ func OnlyFields(fields contracts.Fields, keys ...string) contracts.Fields {
 	return results
 }
 
+func FieldKeys[T any](fields map[string]T) []string {
+	var results = make([]string, len(fields))
+
+	i := 0
+	for key := range fields {
+		results[i] = key
+		i++
+	}
+
+	return results
+}
+
 func MakeKeysMap(keys ...string) contracts.Fields {
 	var keysMap = contracts.Fields{}
 	for _, key := range keys {
