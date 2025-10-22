@@ -47,6 +47,16 @@ func StringOr(otherStr ...string) string {
 	return ""
 }
 
+// IntOr 尽量不返回0值
+func IntOr(otherInt ...int) int {
+	for _, i := range otherInt {
+		if i != 0 {
+			return i
+		}
+	}
+	return 0
+}
+
 // SnakeString 蛇形字符串
 func SnakeString(s string) string {
 	data := make([]byte, 0, len(s)*2)
