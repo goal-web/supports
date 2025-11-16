@@ -9,6 +9,20 @@ import (
 	"strings"
 )
 
+func ExistsPath(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+// FileExists 文件是否存在
+func FileExists(filePath string) bool {
+	stat, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		return false // 文件不存在
+	}
+	return err == nil && !stat.IsDir() // 文件存在
+}
+
 // CopyFile 复制一个文件
 func CopyFile(from, to string, bufferSize int64) error {
 	sourceFileStat, statRrr := os.Stat(from)
@@ -17,25 +31,25 @@ func CopyFile(from, to string, bufferSize int64) error {
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file.", from)
+		return fmt.Errorf("%s is not a regular file", from)
 	}
 
-	source, openErr := os.Open(from)
-	if openErr != nil {
-		return openErr
-	}
-	defer source.Close()
+    source, openErr := os.Open(from)
+    if openErr != nil {
+        return openErr
+    }
+    defer func() { _ = source.Close() }()
 
 	_, statRrr = os.Stat(to)
 	if statRrr == nil {
-		return fmt.Errorf("File %s already exists.", to)
+		return fmt.Errorf("file %s already exists", to)
 	}
 
-	destination, createErr := os.Create(to)
-	if createErr != nil {
-		return createErr
-	}
-	defer destination.Close()
+    destination, createErr := os.Create(to)
+    if createErr != nil {
+        return createErr
+    }
+    defer func() { _ = destination.Close() }()
 
 	buf := make([]byte, bufferSize)
 	for {

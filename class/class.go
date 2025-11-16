@@ -13,6 +13,8 @@ import (
 type Class[T any] struct {
 	reflect.Type
 
+	hasPtr bool
+
 	// map[tag名]map[字段名]字段类型
 	tagFields sync.Map
 	fields    map[string]reflect.StructField
@@ -40,6 +42,8 @@ func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
 			valueBytes = []byte(v)
 		case fmt.Stringer:
 			valueBytes = []byte(v.String())
+		default:
+			valueBytes, _ = json.Marshal(v)
 		}
 
 		if len(valueBytes) > 0 {
@@ -62,7 +66,14 @@ func tryToParseByJson(t reflect.Type, value interface{}) (interface{}, bool) {
 }
 
 func (class *Class[T]) NewByTag(data contracts.Fields, tag string) T {
-	object := reflect.New(class.Type).Elem()
+	object := reflect.New(class.Type)
+	if !class.hasPtr {
+		object = object.Elem()
+	}
+	assignmentObject := object
+	if class.hasPtr {
+		assignmentObject = object.Elem()
+	}
 
 	if data != nil {
 		jsonFields := class.getFields("json")
@@ -75,17 +86,17 @@ func (class *Class[T]) NewByTag(data contracts.Fields, tag string) T {
 					field, ok = class.fields[key]
 				}
 			}
-			if ok && field.IsExported() {
+			if ok && field.IsExported() && value != nil {
 				jsonValue, isPtr := tryToParseByJson(field.Type, value)
 				if jsonValue != nil {
 					if isPtr {
-						object.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue))
+						assignmentObject.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue))
 					} else {
-						object.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue).Elem())
+						assignmentObject.FieldByIndex(field.Index).Set(reflect.ValueOf(jsonValue).Elem())
 					}
 					continue
 				} else {
-					object.FieldByIndex(field.Index).Set(utils.ToValue(field.Type, value))
+					assignmentObject.FieldByIndex(field.Index).Set(utils.ToValue(field.Type, value))
 				}
 			}
 		}
@@ -104,10 +115,11 @@ func Make[T any](args ...T) contracts.Class[T] {
 	if argType == nil {
 		return nil
 	}
-	if argType.Kind() == reflect.Ptr {
+	hasPtr := argType.Kind() == reflect.Ptr
+	if hasPtr {
 		argType = argType.Elem()
 	}
-	class := &Class[T]{Type: argType}
+	class := &Class[T]{Type: argType, hasPtr: hasPtr}
 	if argType.Kind() != reflect.Struct {
 		panic(TypeException{Err: errors.New("只支持 struct 类型")})
 	}
@@ -138,10 +150,10 @@ func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
 
 	if !exists {
 		var fields = map[string]reflect.StructField{}
-		for i := 0; i < class.Type.NumField(); i++ {
-			field := class.Type.Field(i)
+        for i := 0; i < class.NumField(); i++ {
+            field := class.Field(i)
 			tags := utils.ParseStructTag(field.Tag)
-			if target := tags[tag]; target != nil && len(target) > 0 {
+			if target := tags[tag]; len(target) > 0 {
 				fields[target[0]] = field
 			} else {
 				fields[field.Name] = field
@@ -157,8 +169,8 @@ func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
 
 func (class *Class[T]) initFields() {
 	var fields = map[string]reflect.StructField{}
-	for i := 0; i < class.Type.NumField(); i++ {
-		field := class.Type.Field(i)
+    for i := 0; i < class.NumField(); i++ {
+        field := class.Field(i)
 		fields[field.Name] = field
 	}
 	class.fields = fields

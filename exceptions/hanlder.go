@@ -1,14 +1,15 @@
 package exceptions
 
 import (
+	"reflect"
+
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/logs"
 	"github.com/goal-web/supports/utils"
-	"reflect"
 )
 
 type DefaultExceptionHandler struct {
-	dontReportExceptions []reflect.Type
+	DontReportExceptions []reflect.Type
 }
 
 func NewDefaultHandler(dontReportExceptions []contracts.Exception) DefaultExceptionHandler {
@@ -27,5 +28,5 @@ func (handler DefaultExceptionHandler) Report(exception contracts.Exception) {
 }
 
 func (handler DefaultExceptionHandler) ShouldReport(exception contracts.Exception) bool {
-	return !utils.IsInstanceIn(exception, handler.dontReportExceptions...)
+	return !utils.IsInstanceIn(exception, handler.DontReportExceptions...)
 }

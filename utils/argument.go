@@ -5,6 +5,17 @@ import (
 	"time"
 )
 
+func DefaultValue[T any](values []T, defaultValue ...T) T {
+	if len(values) > 0 {
+		return values[0]
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	var a T
+	return a
+}
+
 func DefaultString(values []string, defaultValue ...string) string {
 	if len(values) > 0 {
 		return values[0]

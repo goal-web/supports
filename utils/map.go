@@ -5,7 +5,7 @@ import (
 	"github.com/goal-web/contracts"
 )
 
-// GetMapKeys 获取 Fields 的所有 key
+// GetMapKeys 获取 ToFields 的所有 key
 func GetMapKeys(data map[string]any) (keys []string) {
 	for key := range data {
 		keys = append(keys, key)

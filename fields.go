@@ -8,9 +8,13 @@ import (
 type InstanceGetter func(key string, defaultValue any) any
 
 type BaseFields struct { // 具体方法
-	contracts.FieldsProvider // 抽象方法，继承 interface
+	Provider contracts.FieldsProvider // 抽象方法，继承 interface
 
 	OptionalGetter InstanceGetter // 如果有设置 getter ，优先使用 getter
+}
+
+func (base *BaseFields) ToFields() contracts.Fields {
+	return base.Provider.ToFields()
 }
 
 func (base *BaseFields) Optional(key string, value any) any {
@@ -82,7 +86,7 @@ func (base *BaseFields) get(key string) any {
 			return value
 		}
 	}
-	return base.Fields()[key]
+	return base.ToFields()[key]
 }
 
 func (base *BaseFields) Only(keys ...string) contracts.Fields {
@@ -103,7 +107,7 @@ func (base *BaseFields) ExceptFields(keys ...string) contracts.Fields {
 		keysMap = utils.MakeKeysMap(keys...)
 	)
 
-	for key, value := range base.Fields() {
+	for key, value := range base.ToFields() {
 		if _, exists := keysMap[key]; !exists {
 			results[key] = value
 		}
