@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/apex/log v1.9.0
+	github.com/goal-web/contracts v0.5.4
 	github.com/modood/table v0.0.0-20200225102042-88de94bb9876
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.7.0
