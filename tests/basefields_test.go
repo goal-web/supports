@@ -1,15 +1,17 @@
-package supports
+package tests
 
 import (
-    "testing"
-    "github.com/goal-web/contracts"
+	"testing"
+
+	"github.com/goal-web/contracts"
+	"github.com/goal-web/supports"
 )
 
 type dummyProvider struct{ fields contracts.Fields }
 func (d dummyProvider) ToFields() contracts.Fields { return d.fields }
 
 func TestBaseFieldsOptionalGetterPrecedence(t *testing.T) {
-    b := &BaseFields{Provider: dummyProvider{fields: contracts.Fields{"a": "x"}}}
+    b := &supports.BaseFields{Provider: dummyProvider{fields: contracts.Fields{"a": "x"}}}
     // without OptionalGetter
     if b.StringOptional("a", "def") != "x" { t.Fatalf("field lookup failed") }
     // with OptionalGetter providing override
@@ -21,7 +23,7 @@ func TestBaseFieldsOptionalGetterPrecedence(t *testing.T) {
 }
 
 func TestBaseFieldsOnlyExcept(t *testing.T) {
-    b := &BaseFields{Provider: dummyProvider{fields: contracts.Fields{"a": 1, "b": 2}}}
+    b := &supports.BaseFields{Provider: dummyProvider{fields: contracts.Fields{"a": 1, "b": 2}}}
     only := b.Only("a")
     if len(only) != 1 || only["a"] != 1 { t.Fatalf("only failed") }
     except := b.ExceptFields("a")

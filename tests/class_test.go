@@ -2,10 +2,11 @@ package tests
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/goal-web/contracts"
 	"github.com/goal-web/supports/class"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type User struct {
