@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	UnCallable = errors.New("不可调用的参数！")
+    ErrUnCallable = errors.New("不可调用的参数！")
 )
 
 func GetCallable(arg any) (reflect.Value, error) {
@@ -18,7 +18,7 @@ func GetCallable(arg any) (reflect.Value, error) {
 		return argValue, nil
 	}
 
-	return argValue, UnCallable
+    return argValue, ErrUnCallable
 }
 
 // IsSameStruct 判断是否同一个结构体

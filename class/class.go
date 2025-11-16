@@ -150,8 +150,8 @@ func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
 
 	if !exists {
 		var fields = map[string]reflect.StructField{}
-		for i := 0; i < class.Type.NumField(); i++ {
-			field := class.Type.Field(i)
+        for i := 0; i < class.NumField(); i++ {
+            field := class.Field(i)
 			tags := utils.ParseStructTag(field.Tag)
 			if target := tags[tag]; len(target) > 0 {
 				fields[target[0]] = field
@@ -169,8 +169,8 @@ func (class *Class[T]) getFields(tag string) map[string]reflect.StructField {
 
 func (class *Class[T]) initFields() {
 	var fields = map[string]reflect.StructField{}
-	for i := 0; i < class.Type.NumField(); i++ {
-		field := class.Type.Field(i)
+    for i := 0; i < class.NumField(); i++ {
+        field := class.Field(i)
 		fields[field.Name] = field
 	}
 	class.fields = fields

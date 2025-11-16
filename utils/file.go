@@ -34,22 +34,22 @@ func CopyFile(from, to string, bufferSize int64) error {
 		return fmt.Errorf("%s is not a regular file", from)
 	}
 
-	source, openErr := os.Open(from)
-	if openErr != nil {
-		return openErr
-	}
-	defer source.Close()
+    source, openErr := os.Open(from)
+    if openErr != nil {
+        return openErr
+    }
+    defer func() { _ = source.Close() }()
 
 	_, statRrr = os.Stat(to)
 	if statRrr == nil {
 		return fmt.Errorf("file %s already exists", to)
 	}
 
-	destination, createErr := os.Create(to)
-	if createErr != nil {
-		return createErr
-	}
-	defer destination.Close()
+    destination, createErr := os.Create(to)
+    if createErr != nil {
+        return createErr
+    }
+    defer func() { _ = destination.Close() }()
 
 	buf := make([]byte, bufferSize)
 	for {
