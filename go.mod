@@ -7,7 +7,7 @@ require (
 	github.com/goal-web/contracts v0.5.4
 	github.com/modood/table v0.0.0-20200225102042-88de94bb9876
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
